@@ -98,6 +98,26 @@ function Hero({ onStart }: { onStart: () => void }) {
         ))}
       </section>
 
+      {/* Social Proof / Stats */}
+      <section className="max-w-4xl mx-auto px-6 pb-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {[
+            { value: "327+", label: "Signals evaluated" },
+            { value: "26+", label: "Bad ideas killed" },
+            { value: "14 days", label: "Avg time to first revenue signal" },
+            { value: "5 min", label: "Install to first brief" },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <div className="text-2xl font-bold text-[var(--text)]">{stat.value}</div>
+              <div className="text-xs text-[var(--text-muted)] mt-1">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+        <p className="text-center text-xs text-[var(--text-muted)] mt-6">
+          Built and battle-tested on a live bootstrapper operation since February 2026.
+        </p>
+      </section>
+
       {/* What You Get */}
       <section className="max-w-3xl mx-auto px-6 pb-20">
         <h2 className="text-2xl font-bold mb-8 text-center">What you get</h2>
