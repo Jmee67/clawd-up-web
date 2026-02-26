@@ -181,8 +181,24 @@ function Onboarding({ onBack }: { onBack: () => void }) {
   };
 
   const generate = () => {
-    const config = btoa(JSON.stringify(form));
-    const cmd = `curl -fsSL https://raw.githubusercontent.com/Jmee67/clawd-up/main/install.sh | bash -s -- --config ${config}`;
+    // Map form fields to what setup.js expects
+    const setupConfig = {
+      name: form.name,
+      timezone: form.timezone,
+      channel: form.notifyChannel,
+      telegram_token: form.telegramToken,
+      discord_webhook: form.discordWebhook,
+      provider: form.provider,
+      api_key: form.apiKey,
+      work_context: form.businessType,
+      work_style: "direct",
+      tier: "starter",
+      vps_host: form.vpsHost,
+      vps_user: form.vpsUser,
+    };
+    const config = btoa(JSON.stringify(setupConfig));
+    const sshPrefix = form.vpsHost ? `ssh ${form.vpsUser}@${form.vpsHost} ` : "";
+    const cmd = `${sshPrefix}curl -fsSL https://raw.githubusercontent.com/Jmee67/clawd-up/main/install.sh | bash -s -- --config ${config}`;
     setCommand(cmd);
   };
 
