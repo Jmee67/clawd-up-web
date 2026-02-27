@@ -5,6 +5,7 @@ import { useState } from "react";
 // ── Types ──────────────────────────────────────────────
 interface FormData {
   name: string;
+  email: string;
   timezone: string;
   businessType: string;
   xHandle: string;
@@ -20,6 +21,7 @@ interface FormData {
 
 const DEFAULT: FormData = {
   name: "",
+  email: "",
   timezone: "Europe/London",
   businessType: "saas",
   xHandle: "",
@@ -96,6 +98,26 @@ function Hero({ onStart }: { onStart: () => void }) {
             <p className="text-sm text-[var(--text-muted)] leading-relaxed">{a.desc}</p>
           </div>
         ))}
+      </section>
+
+      {/* Sample Output */}
+      <section className="max-w-3xl mx-auto px-6 pb-20">
+        <h2 className="text-2xl font-bold mb-8 text-center">See it in action</h2>
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 overflow-hidden">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-3 h-3 rounded-full bg-red-500/60"></div>
+            <div className="w-3 h-3 rounded-full bg-yellow-500/60"></div>
+            <div className="w-3 h-3 rounded-full bg-green-500/60"></div>
+            <span className="text-xs text-[var(--text-muted)] ml-2">Morning Brief — 8:00 AM</span>
+          </div>
+          <div className="space-y-3 text-sm text-[var(--text-muted)] font-mono leading-relaxed">
+            <p className="text-[var(--text)] font-semibold font-sans">3 New Signals</p>
+            <p><span className="text-[var(--green)]">PROMOTED</span> AI invoice matching for construction — 18.5/25 — &quot;I&apos;d pay $200/mo to stop doing this&quot;</p>
+            <p><span className="text-yellow-400">WATCHING</span> Return fraud detection for Shopify — 14/25 — Heavy competition, needs wedge</p>
+            <p><span className="text-red-400">KILLED</span> Pet subscription box — Physical product + saturated market</p>
+            <p className="pt-2 border-t border-[var(--border)] text-xs">Pipeline: 3 active, 1 advanced to SCORING, 26 killed lifetime. Generated in 4.2s.</p>
+          </div>
+        </div>
       </section>
 
       {/* Social Proof / Stats */}
@@ -309,6 +331,11 @@ function Onboarding({ onBack }: { onBack: () => void }) {
               <div>
                 <label className={labelClass}>Your name</label>
                 <input className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Jamie" />
+              </div>
+              <div>
+                <label className={labelClass}>Email</label>
+                <input className={inputClass} type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="you@example.com" />
+                <p className="text-xs text-[var(--text-muted)] mt-1">For license delivery and setup guide</p>
               </div>
               <div>
                 <label className={labelClass}>Timezone</label>
