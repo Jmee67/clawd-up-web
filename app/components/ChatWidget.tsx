@@ -7,7 +7,7 @@ interface Message {
   content: string;
 }
 
-const GREETING = "Hey. I'm Clawd -- ask me anything about the product, setup, or pricing.";
+const GREETING = "Hey. I'm Clawd Up -- ask me anything about the product, setup, or pricing.";
 const API_URL = "https://clawdup.microbuilder.co/api/chat";
 
 export default function ChatWidget() {
@@ -157,7 +157,7 @@ export default function ChatWidget() {
         }}
       >
         <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text)" }}>
-          Clawd
+          Clawd Up
         </span>
         <button
           onClick={() => setOpen(false)}

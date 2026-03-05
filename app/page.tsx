@@ -38,7 +38,7 @@ const DEFAULT: FormData = {
 };
 
 // ── Constants ──────────────────────────────────────────
-const CHECKOUT_URL = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c?locale=en";
+const CHECKOUT_URL = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c?locale=en&currency=USD";
 
 // ── Buy Button ─────────────────────────────────────────
 function BuyButton({ className = "", label = "Buy now — $15" }: { className?: string; label?: string }) {
