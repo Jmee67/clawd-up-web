@@ -53,6 +53,25 @@ function BuyButton({ className = "", label = "Buy now — $15" }: { className?: 
   );
 }
 
+// ── FAQ Item ───────────────────────────────────────────
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-[var(--border)] py-4">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full text-left flex items-center justify-between gap-4"
+      >
+        <span className="text-sm font-semibold text-[var(--text)]">{q}</span>
+        <span className="text-[var(--text-muted)] shrink-0 text-lg leading-none">{open ? "−" : "+"}</span>
+      </button>
+      {open && (
+        <p className="text-sm text-[var(--text-muted)] mt-2 leading-relaxed">{a}</p>
+      )}
+    </div>
+  );
+}
+
 // ── Landing Section ────────────────────────────────────
 function Hero({ onStart }: { onStart: () => void }) {
   const scrollToPricing = () => {
@@ -64,20 +83,40 @@ function Hero({ onStart }: { onStart: () => void }) {
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
         <span className="text-lg font-bold tracking-tight">Clawd Up</span>
-        <BuyButton label="Buy now" className="px-4 py-2 text-sm font-medium" />
+        <a href={CHECKOUT_URL} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm font-medium rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors">Buy now</a>
       </nav>
 
       {/* Hero */}
       <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">
-          The agentic OS<br />
-          <span className="text-[#9b9bb0]">for solopreneurs.</span>
+          Kill bad ideas before<br />
+          <span className="text-[#9b9bb0]">they cost you months.</span>
         </h1>
         <p className="text-lg text-[#9b9bb0] max-w-xl mx-auto mb-10">
-          An AI system that scouts opportunities, kills bad ideas, and runs your
-          pipeline while you build. Wake up to completed work every morning.
+          Three AI agents that scout opportunities, run deep dives, and deliver
+          your morning brief. You build. They operate. $15 one-time.
         </p>
         <BuyButton className="mx-auto" />
+      </section>
+
+      {/* Sample Output (moved above agent cards) */}
+      <section className="max-w-3xl mx-auto px-6 pb-20">
+        <h2 className="text-2xl font-bold mb-8 text-center">What your morning looks like</h2>
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 overflow-hidden">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-3 h-3 rounded-full bg-red-500/60"></div>
+            <div className="w-3 h-3 rounded-full bg-yellow-500/60"></div>
+            <div className="w-3 h-3 rounded-full bg-green-500/60"></div>
+            <span className="text-xs text-[var(--text-muted)] ml-2">Morning Brief — 8:00 AM</span>
+          </div>
+          <div className="space-y-3 text-sm text-[var(--text-muted)] font-mono leading-relaxed">
+            <p className="text-[var(--text)] font-semibold font-sans">3 New Signals</p>
+            <p><span className="text-[var(--green)]">PROMOTED</span> AI invoice matching for construction — 18.5/25 — &quot;I&apos;d pay $200/mo to stop doing this&quot;</p>
+            <p><span className="text-yellow-400">WATCHING</span> Return fraud detection for Shopify — 14/25 — Heavy competition, needs wedge</p>
+            <p><span className="text-red-400">KILLED</span> Pet subscription box — Physical product + saturated market</p>
+            <p className="pt-2 border-t border-[var(--border)] text-xs">Pipeline: 3 active, 1 advanced to SCORING, 26 killed lifetime. Generated in 4.2s.</p>
+          </div>
+        </div>
       </section>
 
       {/* System Components */}
@@ -112,26 +151,6 @@ function Hero({ onStart }: { onStart: () => void }) {
         ))}
       </section>
 
-      {/* Sample Output */}
-      <section className="max-w-3xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold mb-8 text-center">What your morning looks like</h2>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 overflow-hidden">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-3 h-3 rounded-full bg-red-500/60"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500/60"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500/60"></div>
-            <span className="text-xs text-[var(--text-muted)] ml-2">Morning Brief — 8:00 AM</span>
-          </div>
-          <div className="space-y-3 text-sm text-[var(--text-muted)] font-mono leading-relaxed">
-            <p className="text-[var(--text)] font-semibold font-sans">3 New Signals</p>
-            <p><span className="text-[var(--green)]">PROMOTED</span> AI invoice matching for construction — 18.5/25 — &quot;I&apos;d pay $200/mo to stop doing this&quot;</p>
-            <p><span className="text-yellow-400">WATCHING</span> Return fraud detection for Shopify — 14/25 — Heavy competition, needs wedge</p>
-            <p><span className="text-red-400">KILLED</span> Pet subscription box — Physical product + saturated market</p>
-            <p className="pt-2 border-t border-[var(--border)] text-xs">Pipeline: 3 active, 1 advanced to SCORING, 26 killed lifetime. Generated in 4.2s.</p>
-          </div>
-        </div>
-      </section>
-
       {/* Stats */}
       <section className="max-w-4xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
@@ -150,6 +169,14 @@ function Hero({ onStart }: { onStart: () => void }) {
         <p className="text-center text-xs text-[var(--text-muted)] mt-6">
           Built for a real solo operation. Battle-tested daily since February 2026.
         </p>
+      </section>
+
+      {/* Founder Testimonial */}
+      <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
+        <blockquote className="text-lg italic text-[var(--text-muted)] leading-relaxed max-w-2xl mx-auto">
+          &ldquo;I built Clawd Up for myself. Three agents running 24/7, scanning Reddit and X, killing bad ideas before I waste time on them. After a month of daily use, I&apos;m selling what works.&rdquo;
+        </blockquote>
+        <p className="text-sm text-[var(--text-muted)] mt-4">&mdash; Jamie, Microbuilder</p>
       </section>
 
       {/* What You Get */}
@@ -174,6 +201,29 @@ function Hero({ onStart }: { onStart: () => void }) {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="max-w-3xl mx-auto px-6 pb-20">
+        <h2 className="text-2xl font-bold mb-8 text-center">FAQ</h2>
+        <div className="max-w-2xl mx-auto">
+          <FAQItem
+            q="What is OpenClaw?"
+            a="OpenClaw is a free, open-source AI agent framework. Clawd Up is a pre-configured agent package that runs on top of it. Install OpenClaw first, then add Clawd Up in one command."
+          />
+          <FAQItem
+            q="What do I need to run this?"
+            a="A Linux server (VPS or local) with Node.js 18+, an OpenClaw gateway, and an API key from Anthropic, OpenAI, or Google. A $5/mo VPS works fine."
+          />
+          <FAQItem
+            q="What's included in the $9/mo weekly updates?"
+            a="New agent personalities (SOULs), skills, signal sources, kill patterns, and pipeline improvements. Everything we build and battle-test on our own operation. Cancel anytime."
+          />
+          <FAQItem
+            q="Is there a demo?"
+            a="The morning brief sample above is real output from a live system. Check the GitHub repo for the full agent configs, cron schedules, and pipeline setup."
+          />
+        </div>
+      </section>
+
       {/* Pricing */}
       <section id="pricing" className="max-w-3xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-2xl font-bold mb-4">Pricing</h2>
@@ -185,7 +235,9 @@ function Hero({ onStart }: { onStart: () => void }) {
             <li><span className="text-[var(--green)] mr-2">&#10003;</span>All crons, templates, pipeline</li>
             <li><span className="text-[var(--green)] mr-2">&#10003;</span>Lifetime access to current version</li>
           </ul>
+          <p className="text-xs text-[var(--text-muted)] mb-4">Requires <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text)]">OpenClaw</a> (free, open source)</p>
           <BuyButton className="w-full" />
+          <p className="text-xs text-center text-[var(--text-muted)] mt-3">30-day money-back guarantee. No questions asked.</p>
           <div className="mt-4 pt-4 border-t border-[var(--border)]">
             <div className="text-sm font-medium text-[var(--text)] mb-1">
               + Weekly Updates — $9/mo
