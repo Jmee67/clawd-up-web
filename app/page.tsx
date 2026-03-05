@@ -37,7 +37,7 @@ const DEFAULT: FormData = {
 };
 
 // ── Constants ──────────────────────────────────────────
-const CHECKOUT_URL = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c";
+const CHECKOUT_URL = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c?locale=en";
 
 // ── Buy Button ─────────────────────────────────────────
 function BuyButton({ className = "", label = "Buy now — $15" }: { className?: string; label?: string }) {
@@ -181,9 +181,9 @@ function Hero({ onStart }: { onStart: () => void }) {
           <div className="text-3xl font-bold mb-1">$15</div>
           <div className="text-sm text-[var(--text-muted)] mb-4">one-time, own it forever</div>
           <ul className="space-y-2 text-sm text-[var(--text-muted)] mb-6">
-            <li>All 3 agents</li>
-            <li>All crons, templates, pipeline</li>
-            <li>Lifetime access to current version</li>
+            <li><span className="text-[var(--green)] mr-2">&#10003;</span>All 3 agents</li>
+            <li><span className="text-[var(--green)] mr-2">&#10003;</span>All crons, templates, pipeline</li>
+            <li><span className="text-[var(--green)] mr-2">&#10003;</span>Lifetime access to current version</li>
           </ul>
           <BuyButton className="w-full" />
           <div className="mt-4 pt-4 border-t border-[var(--border)]">
@@ -216,11 +216,26 @@ function Onboarding({ onBack, purchased }: { onBack: () => void; purchased?: boo
   const [form, setForm] = useState<FormData>(DEFAULT);
   const [command, setCommand] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = <K extends keyof FormData>(key: K, val: FormData[K]) =>
     setForm((f) => ({ ...f, [key]: val }));
 
+  const validate = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    if (step === 0) {
+      if (!form.name.trim()) newErrors.name = "Name is required";
+      if (!form.email.trim() || !form.email.includes("@")) newErrors.email = "Valid email is required";
+    }
+    if (step === 3) {
+      if (!form.apiKey.trim()) newErrors.apiKey = "API key is required";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const next = () => {
+    if (!validate()) return;
     if (step < STEPS.length - 1) setStep(step + 1);
     else generate();
   };
@@ -266,6 +281,14 @@ function Onboarding({ onBack, purchased }: { onBack: () => void; purchased?: boo
           <p className="text-sm text-[var(--text-muted)] mb-6">
             Run this on your server. It clones the repo, runs setup with your config, and starts the agents.
           </p>
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 mb-4 text-sm text-[var(--text-muted)] space-y-1">
+            <p className="text-[var(--text)] font-medium text-xs uppercase tracking-wider mb-2">Your configuration</p>
+            <p>Name: {form.name}</p>
+            <p>Timezone: {form.timezone}</p>
+            <p>Provider: {form.provider}</p>
+            <p>Notifications: {form.notifyChannel}</p>
+            <p>Server: {form.vpsHost || "Local install"}</p>
+          </div>
           <div className="relative rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 font-mono text-xs leading-relaxed break-all">
             {command}
             <button
@@ -276,7 +299,7 @@ function Onboarding({ onBack, purchased }: { onBack: () => void; purchased?: boo
             </button>
           </div>
           <div className="mt-6 text-xs text-[var(--text-muted)] space-y-1">
-            <p>Requirements: Node.js 18+, OpenClaw installed, API key for your chosen provider.</p>
+            <p>Requirements: Node.js 18+, an OpenClaw gateway running on your server, and an API key for your chosen provider.</p>
             <p>
               Need help?{" "}
               <a href="https://github.com/Jmee67/clawd-up" className="underline hover:text-[var(--text)]">
@@ -287,6 +310,12 @@ function Onboarding({ onBack, purchased }: { onBack: () => void; purchased?: boo
                 Discord
               </a>
             </p>
+          </div>
+          <div className="mt-6 text-xs text-[var(--text-muted)] space-y-1">
+            <p className="font-medium text-[var(--text)]">What happens next</p>
+            <p>1. The script installs Clawd Up agents on your OpenClaw instance</p>
+            <p>2. Your first morning brief arrives within 5 minutes</p>
+            <p>3. Scout starts scanning for signals immediately</p>
           </div>
           <button
             onClick={() => { setCommand(null); setStep(0); }}
@@ -348,12 +377,14 @@ function Onboarding({ onBack, purchased }: { onBack: () => void; purchased?: boo
             <>
               <div>
                 <label className={labelClass}>Your name</label>
-                <input className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Jamie" />
+                <input className={inputClass} value={form.name} onChange={(e) => { set("name", e.target.value); setErrors((prev) => { const { name: _, ...rest } = prev; return rest; }); }} placeholder="Jamie" />
+                {errors.name && <p className="text-xs text-red-400 mt-1">{errors.name}</p>}
               </div>
               <div>
                 <label className={labelClass}>Email</label>
-                <input className={inputClass} type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="you@example.com" />
+                <input className={inputClass} type="email" value={form.email} onChange={(e) => { set("email", e.target.value); setErrors((prev) => { const { email: _, ...rest } = prev; return rest; }); }} placeholder="you@example.com" />
                 <p className="text-xs text-[var(--text-muted)] mt-1">For license delivery and setup guide</p>
+                {errors.email && <p className="text-xs text-red-400 mt-1">{errors.email}</p>}
               </div>
               <div>
                 <label className={labelClass}>Timezone</label>
@@ -451,10 +482,11 @@ function Onboarding({ onBack, purchased }: { onBack: () => void; purchased?: boo
               </div>
               <div>
                 <label className={labelClass}>API key</label>
-                <input className={inputClass} type="password" value={form.apiKey} onChange={(e) => set("apiKey", e.target.value)} placeholder="sk-..." />
+                <input className={inputClass} type="password" value={form.apiKey} onChange={(e) => { set("apiKey", e.target.value); setErrors((prev) => { const { apiKey: _, ...rest } = prev; return rest; }); }} placeholder="sk-..." />
                 <p className="text-xs text-[var(--text-muted)] mt-1">
                   Stored locally on your server. Never sent to us.
                 </p>
+                {errors.apiKey && <p className="text-xs text-red-400 mt-1">{errors.apiKey}</p>}
               </div>
             </>
           )}
