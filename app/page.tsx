@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import ChatWidget from "./components/ChatWidget";
 
 // ── Types ──────────────────────────────────────────────
 interface FormData {
@@ -256,6 +257,7 @@ function Hero({ onStart }: { onStart: () => void }) {
           OpenClaw
         </a>
       </footer>
+      <ChatWidget />
     </div>
   );
 }
