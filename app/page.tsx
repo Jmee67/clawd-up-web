@@ -70,33 +70,33 @@ function Hero({ onStart }: { onStart: () => void }) {
       {/* Hero */}
       <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">
-          Your AI ops team.<br />
-          <span className="text-[var(--text-muted)]">Ship faster.</span>
+          The agentic OS<br />
+          <span className="text-[var(--text-muted)]">for solopreneurs.</span>
         </h1>
         <p className="text-lg text-[var(--text-muted)] max-w-xl mx-auto mb-10">
-          Three agents that find demand signals, write deep dives, and run your
-          opportunity pipeline. You build. They operate.
+          An AI system that scouts opportunities, kills bad ideas, and runs your
+          pipeline while you build. Wake up to completed work every morning.
         </p>
         <BuyButton className="mx-auto" />
       </section>
 
-      {/* Agents */}
+      {/* System Components */}
       <section className="max-w-5xl mx-auto px-6 pb-20 grid md:grid-cols-3 gap-6">
         {[
           {
-            name: "Scout",
-            desc: "Scans X and Reddit for demand signals. Real pain, real spend, real opportunity.",
-            tag: "Detection",
+            name: "Signal Detection",
+            desc: "Scans Reddit, X, and Hacker News for bleeding-neck problems with money behind them. Real pain, real spend.",
+            tag: "Scout Agent",
           },
           {
-            name: "Researcher",
-            desc: "Writes 5S deep dives. Signal, Size, Shape, Speed, Stress Test. Finds reasons NOT to build.",
-            tag: "Analysis",
+            name: "Opportunity Analysis",
+            desc: "5S deep dives that find reasons NOT to build before you waste a month. Signal, Size, Shape, Speed, Stress Test.",
+            tag: "Researcher Agent",
           },
           {
-            name: "Operator",
-            desc: "Morning briefs, signal triage, nightly builds, pipeline enforcement. Keeps everything moving.",
-            tag: "Execution",
+            name: "Autonomous Operations",
+            desc: "Morning briefs, pipeline enforcement, nightly builds. Runs while you sleep so you wake up to progress.",
+            tag: "Operator Agent",
           },
         ].map((a) => (
           <div
@@ -114,7 +114,7 @@ function Hero({ onStart }: { onStart: () => void }) {
 
       {/* Sample Output */}
       <section className="max-w-3xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold mb-8 text-center">See it in action</h2>
+        <h2 className="text-2xl font-bold mb-8 text-center">What your morning looks like</h2>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 overflow-hidden">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-3 h-3 rounded-full bg-red-500/60"></div>
@@ -132,13 +132,13 @@ function Hero({ onStart }: { onStart: () => void }) {
         </div>
       </section>
 
-      {/* Social Proof / Stats */}
+      {/* Stats */}
       <section className="max-w-4xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           {[
-            { value: "327+", label: "Signals evaluated" },
-            { value: "26+", label: "Bad ideas killed" },
-            { value: "14 days", label: "Avg time to first revenue signal" },
+            { value: "92%", label: "Kill rate on bad ideas" },
+            { value: "327+", label: "Signals evaluated autonomously" },
+            { value: "3 days", label: "To first revenue signal" },
             { value: "5 min", label: "Install to first brief" },
           ].map((stat) => (
             <div key={stat.label}>
@@ -148,23 +148,23 @@ function Hero({ onStart }: { onStart: () => void }) {
           ))}
         </div>
         <p className="text-center text-xs text-[var(--text-muted)] mt-6">
-          Built and battle-tested on a live bootstrapper operation since February 2026.
+          Built for a real solo operation. Battle-tested daily since February 2026.
         </p>
       </section>
 
       {/* What You Get */}
       <section className="max-w-3xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold mb-8 text-center">What you get</h2>
+        <h2 className="text-2xl font-bold mb-8 text-center">What&apos;s in the box</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           {[
-            "3 specialized AI agents with expert-grade identities",
-            "Pre-configured cron schedules (briefs, triage, builds)",
-            "Pipeline system with stage gates and kill patterns",
-            "Memory system with decay, vault, and daily notes",
-            "Immune system for self-healing agent operations",
-            "28% leaner than default OpenClaw config",
-            "Telegram or Discord notifications",
-            "One-command install, running in 5 minutes",
+            "3 autonomous agents with expert-grade system prompts",
+            "Pre-configured cron schedules (briefs, triage, nightly builds)",
+            "Pipeline system with stage gates and 26+ kill patterns",
+            "Memory system with decay scoring, vault, and daily notes",
+            "Self-healing operations with health monitoring",
+            "Telegram or Discord notifications out of the box",
+            "One-command install, first brief in 5 minutes",
+            "Your server, your data, your API keys. Nothing phones home.",
           ].map((item) => (
             <div key={item} className="flex items-start gap-3 text-sm text-[var(--text-muted)]">
               <span className="text-[var(--green)] mt-0.5 shrink-0">&#10003;</span>
