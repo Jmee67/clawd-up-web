@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 // ── Types ──────────────────────────────────────────────
 interface FormData {
@@ -35,37 +36,48 @@ const DEFAULT: FormData = {
   vpsUser: "root",
 };
 
+// ── Constants ──────────────────────────────────────────
+const CHECKOUT_URL = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c";
+
+// ── Buy Button ─────────────────────────────────────────
+function BuyButton({ className = "", label = "Buy now — $15" }: { className?: string; label?: string }) {
+  return (
+    <a
+      href={CHECKOUT_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-block px-8 py-3 text-sm font-semibold rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-colors text-center ${className}`}
+    >
+      {label}
+    </a>
+  );
+}
+
 // ── Landing Section ────────────────────────────────────
 function Hero({ onStart }: { onStart: () => void }) {
+  const scrollToPricing = () => {
+    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="gradient-mesh min-h-screen">
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
         <span className="text-lg font-bold tracking-tight">Clawd Up</span>
-        <button
-          onClick={onStart}
-          className="px-4 py-2 text-sm font-medium rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-colors"
-        >
-          Get Started
-        </button>
+        <BuyButton label="Buy now" className="px-4 py-2 text-sm font-medium" />
       </nav>
 
       {/* Hero */}
       <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">
           Your AI ops team.<br />
-          <span className="text-[var(--text-muted)]">$15. Once.</span>
+          <span className="text-[var(--text-muted)]">Ship faster.</span>
         </h1>
         <p className="text-lg text-[var(--text-muted)] max-w-xl mx-auto mb-10">
           Three agents that find demand signals, write deep dives, and run your
           opportunity pipeline. You build. They operate.
         </p>
-        <button
-          onClick={onStart}
-          className="px-8 py-3 text-base font-semibold rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-colors"
-        >
-          Set Up Your Team
-        </button>
+        <BuyButton className="mx-auto" />
       </section>
 
       {/* Agents */}
@@ -163,7 +175,7 @@ function Hero({ onStart }: { onStart: () => void }) {
       </section>
 
       {/* Pricing */}
-      <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
+      <section id="pricing" className="max-w-3xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-2xl font-bold mb-4">Pricing</h2>
         <div className="inline-block rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 text-left max-w-sm">
           <div className="text-3xl font-bold mb-1">$15</div>
@@ -173,12 +185,7 @@ function Hero({ onStart }: { onStart: () => void }) {
             <li>All crons, templates, pipeline</li>
             <li>Lifetime access to current version</li>
           </ul>
-          <button
-            onClick={onStart}
-            className="w-full py-2.5 text-sm font-semibold rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-colors"
-          >
-            Get Started — $15
-          </button>
+          <BuyButton className="w-full" />
           <div className="mt-4 pt-4 border-t border-[var(--border)]">
             <div className="text-sm font-medium text-[var(--text)] mb-1">
               + Weekly Updates — $9/mo
@@ -204,7 +211,7 @@ function Hero({ onStart }: { onStart: () => void }) {
 // ── Onboarding Steps ───────────────────────────────────
 const STEPS = ["Basics", "Platforms", "Notifications", "AI Provider", "Server"] as const;
 
-function Onboarding({ onBack }: { onBack: () => void }) {
+function Onboarding({ onBack, purchased }: { onBack: () => void; purchased?: boolean }) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(DEFAULT);
   const [command, setCommand] = useState<string | null>(null);
@@ -223,7 +230,6 @@ function Onboarding({ onBack }: { onBack: () => void }) {
   };
 
   const generate = () => {
-    // Map form fields to what setup.js expects
     const setupConfig = {
       name: form.name,
       timezone: form.timezone,
@@ -304,9 +310,21 @@ function Onboarding({ onBack }: { onBack: () => void }) {
     <div className="min-h-screen gradient-mesh flex items-center justify-center px-6">
       <div className="max-w-md w-full">
         {/* Header */}
-        <button onClick={onBack} className="text-sm text-[var(--text-muted)] hover:text-[var(--text)] mb-6 transition-colors">
-          &larr; Back
-        </button>
+        {purchased ? (
+          <div className="mb-6">
+            <div className="inline-block px-3 py-1 rounded-full bg-[var(--green)]/10 text-[var(--green)] text-xs font-medium mb-3">
+              ✓ Purchase complete
+            </div>
+            <h2 className="text-xl font-bold">Thanks for purchasing Clawd Up!</h2>
+            <p className="text-sm text-[var(--text-muted)] mt-1">
+              Set up your agents below to get started.
+            </p>
+          </div>
+        ) : (
+          <button onClick={onBack} className="text-sm text-[var(--text-muted)] hover:text-[var(--text)] mb-6 transition-colors">
+            &larr; Back
+          </button>
+        )}
 
         {/* Progress */}
         <div className="flex gap-1.5 mb-8">
@@ -477,13 +495,28 @@ function Onboarding({ onBack }: { onBack: () => void }) {
   );
 }
 
-// ── Main ───────────────────────────────────────────────
-export default function Home() {
-  const [view, setView] = useState<"landing" | "onboarding">("landing");
+// ── Main (inner, reads search params) ──────────────────
+function HomeInner() {
+  const searchParams = useSearchParams();
+  const purchased = searchParams.get("purchased") === "true";
+  const [view, setView] = useState<"landing" | "onboarding">(purchased ? "onboarding" : "landing");
+
+  useEffect(() => {
+    if (purchased) setView("onboarding");
+  }, [purchased]);
 
   return view === "landing" ? (
     <Hero onStart={() => setView("onboarding")} />
   ) : (
-    <Onboarding onBack={() => setView("landing")} />
+    <Onboarding onBack={() => setView("landing")} purchased={purchased} />
+  );
+}
+
+// ── Main (with Suspense for useSearchParams) ───────────
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen gradient-mesh" />}>
+      <HomeInner />
+    </Suspense>
   );
 }
