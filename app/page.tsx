@@ -71,9 +71,9 @@ function Hero({ onStart }: { onStart: () => void }) {
       <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">
           The agentic OS<br />
-          <span className="text-[var(--text-muted)]">for solopreneurs.</span>
+          <span className="text-[#9b9bb0]">for solopreneurs.</span>
         </h1>
-        <p className="text-lg text-[var(--text-muted)] max-w-xl mx-auto mb-10">
+        <p className="text-lg text-[#9b9bb0] max-w-xl mx-auto mb-10">
           An AI system that scouts opportunities, kills bad ideas, and runs your
           pipeline while you build. Wake up to completed work every morning.
         </p>
