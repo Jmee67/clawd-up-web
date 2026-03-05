@@ -96,7 +96,7 @@ export default function ChatWidget() {
           bottom: "24px",
           right: "24px",
           zIndex: 9999,
-          padding: "10px 20px",
+          padding: "12px",
           fontSize: "14px",
           fontWeight: 600,
           borderRadius: "9999px",
@@ -106,6 +106,11 @@ export default function ChatWidget() {
           cursor: "pointer",
           boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
           transition: "all 0.2s",
+          width: "48px",
+          height: "48px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
         onMouseEnter={(e) => {
           (e.target as HTMLElement).style.borderColor = "var(--accent)";
@@ -113,8 +118,9 @@ export default function ChatWidget() {
         onMouseLeave={(e) => {
           (e.target as HTMLElement).style.borderColor = "var(--border)";
         }}
+        aria-label="Chat"
       >
-        Ask Clawd
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
       </button>
     );
   }
