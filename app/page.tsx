@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ChatWidget from "./components/ChatWidget";
 
@@ -39,12 +39,9 @@ const DEFAULT: FormData = {
 
 // ── Constants ──────────────────────────────────────────
 const CHECKOUT_STARTER = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c?locale=en&currency=USD";
-// TODO: Replace with actual Pro subscription product ID once Jamie creates it in LemonSqueezy
-// Falling back to Starter checkout URL until then
-const CHECKOUT_PRO = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c?locale=en&currency=USD";
 
 // ── Buy Button ─────────────────────────────────────────
-function BuyButton({ className = "", label = "Get Started", href = CHECKOUT_PRO }: { className?: string; label?: string; href?: string }) {
+function BuyButton({ className = "", label = "Get Started", href = CHECKOUT_STARTER }: { className?: string; label?: string; href?: string }) {
   return (
     <a
       href={href}
@@ -67,7 +64,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
         className="w-full text-left flex items-center justify-between gap-4"
       >
         <span className="text-sm font-semibold text-[var(--text)]">{q}</span>
-        <span className="text-[var(--text-muted)] shrink-0 text-lg leading-none">{open ? "−" : "+"}</span>
+        <span className="text-[var(--text-muted)] shrink-0 text-lg leading-none">{open ? "\u2212" : "+"}</span>
       </button>
       {open && (
         <p className="text-sm text-[var(--text-muted)] mt-2 leading-relaxed">{a}</p>
@@ -76,180 +73,364 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
+// ── Product Demo Tabs ──────────────────────────────────
+function ProductDemo() {
+  const [tab, setTab] = useState<"brief" | "pipeline" | "buildlog">("brief");
+
+  const tabs = [
+    { id: "brief" as const, label: "Morning Brief" },
+    { id: "pipeline" as const, label: "Pipeline" },
+    { id: "buildlog" as const, label: "Build Log" },
+  ];
+
+  return (
+    <section className="max-w-3xl mx-auto px-6 pb-24">
+      <h2 className="text-2xl font-bold mb-2 text-center">Your pipeline. Morning to midnight.</h2>
+      <p className="text-sm text-[var(--text-muted)] text-center mb-8">Watch an opportunity move from raw signal to shipped product.</p>
+
+      {/* Tab bar */}
+      <div className="flex gap-1 mb-6 justify-center">
+        {tabs.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+              tab === t.id
+                ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+                : "text-[var(--text-muted)] hover:text-[var(--text)]"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab content */}
+      <div className="min-h-[320px]">
+        {tab === "brief" && (
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-3 h-3 rounded-full bg-red-500/60"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500/60"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500/60"></div>
+              <span className="text-xs text-[var(--text-muted)] ml-2">Morning Brief &mdash; Mar 6, 2026</span>
+            </div>
+            <div className="space-y-3 text-sm font-mono leading-relaxed">
+              <p className="text-[var(--text)] font-semibold font-sans">3 new signals overnight. 1 promoted to pipeline.</p>
+              <div className="space-y-1">
+                <p className="text-[var(--green)]">PROMOTED: MCP Config Validator</p>
+                <p className="text-[var(--text-muted)] pl-4">Score: 19/25 (Signal 4, Size 4, Shape 4, Speed 4, Stress 3)</p>
+                <p className="text-[var(--text-muted)] pl-4">Source: r/LocalLLaMA &mdash; 847 upvotes</p>
+                <p className="text-[var(--text-muted)] pl-4">Pain: &ldquo;Spent 3 hours debugging MCP server config&rdquo;</p>
+                <p className="text-[var(--text-muted)] pl-4">Next: Researcher assigned for deep dive</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-red-400/70">KILLED: 2 signals</p>
+                <p className="text-[var(--text-muted)] pl-4">Generic AI wrapper (kill pattern: no wedge)</p>
+                <p className="text-[var(--text-muted)] pl-4">Social app for dog owners (kill pattern: social/network effect)</p>
+              </div>
+              <p className="pt-2 border-t border-[var(--border)] text-xs text-[var(--text-muted)]">Pipeline: 4 active | 2 in review | 1 building</p>
+            </div>
+          </div>
+        )}
+
+        {tab === "pipeline" && (
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+            <div className="flex gap-4 min-w-[700px]">
+              {[
+                { stage: "QUALIFIED", count: 1, cards: [{ name: "Invoice Tracker", score: "--" }] },
+                { stage: "RESEARCHING", count: 1, cards: [{ name: "MCP Config Validator", score: "--" }] },
+                { stage: "SCORING", count: 1, cards: [{ name: "Agent Cost Ctrl", score: "19/25" }] },
+                { stage: "BUILDING", count: 1, cards: [{ name: "Budget Guard", score: "22/25" }] },
+                { stage: "LIVE", count: 1, cards: [{ name: "Clawd Up", score: "$MRR" }] },
+              ].map((col) => (
+                <div key={col.stage} className="flex-1 min-w-[140px]">
+                  <div className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
+                    {col.stage} ({col.count})
+                  </div>
+                  {col.cards.map((card) => (
+                    <div key={card.name} className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
+                      <p className="text-sm font-medium text-[var(--text)] mb-1">{card.name}</p>
+                      <p className="text-xs text-[var(--text-muted)]">{card.score}</p>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab === "buildlog" && (
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-3 h-3 rounded-full bg-red-500/60"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500/60"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500/60"></div>
+              <span className="text-xs text-[var(--text-muted)] ml-2">Build Log &mdash; Nightly</span>
+            </div>
+            <div className="space-y-1 text-sm font-mono leading-relaxed">
+              <p><span className="text-[var(--text-muted)]">[23:01]</span> <span className="text-[var(--accent)]">Forge:</span> <span className="text-[var(--text)]">Starting nightly build for &ldquo;Budget Guard&rdquo;</span></p>
+              <p><span className="text-[var(--text-muted)]">[23:01]</span> <span className="text-[var(--accent)]">Forge:</span> <span className="text-[var(--text)]">Reading spec from design-specs/budget-guard.md</span></p>
+              <p><span className="text-[var(--text-muted)]">[23:03]</span> <span className="text-[var(--accent)]">Forge:</span> <span className="text-[var(--text)]">Created 4 files: landing page, API route, pricing component, checkout flow</span></p>
+              <p><span className="text-[var(--text-muted)]">[23:04]</span> <span className="text-[var(--green)]">QA:</span> <span className="text-[var(--text)]">Running automated checks...</span></p>
+              <p><span className="text-[var(--text-muted)]">[23:04]</span> <span className="text-[var(--green)]">QA:</span> <span className="text-[var(--text)]">Lighthouse 96/100. No accessibility violations.</span></p>
+              <p><span className="text-[var(--text-muted)]">[23:05]</span> <span className="text-[var(--green)]">QA:</span> <span className="text-[var(--text)]">All CTAs resolve. Checkout flow verified.</span></p>
+              <p><span className="text-[var(--text-muted)]">[23:05]</span> <span className="text-[#ec4899]">Designer:</span> <span className="text-[var(--text)]">UX audit score: 84/100. 2 minor suggestions filed.</span></p>
+              <p><span className="text-[var(--text-muted)]">[23:06]</span> <span className="text-[var(--accent)]">Forge:</span> <span className="text-[var(--text)]">Committed a1f3e21. Deployed to budget-guard.microbuilder.co</span></p>
+              <p><span className="text-[var(--text-muted)]">[23:06]</span> <span className="text-[var(--text)]">Operator:</span> <span className="text-[var(--text)]">Build complete. Morning brief updated.</span></p>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ── Agent Card ─────────────────────────────────────────
+function AgentCard({ name, role, desc, color, pro }: { name: string; role: string; desc: string; color: string; pro?: boolean }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div
+      className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer relative"
+      onClick={() => setExpanded(!expanded)}
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
+    >
+      {pro && (
+        <span className="absolute top-3 right-3 text-[10px] font-bold px-1.5 py-0.5 rounded bg-[var(--accent)]/10 text-[var(--accent)] uppercase tracking-wider">Pro</span>
+      )}
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
+        <h4 className="text-sm font-semibold text-[var(--text)]">{name}</h4>
+      </div>
+      <p className="text-xs font-medium text-[var(--accent)] mb-1">{role}</p>
+      <div className={`text-sm text-[var(--text-muted)] leading-relaxed transition-all duration-200 overflow-hidden ${expanded ? "max-h-40 opacity-100" : "max-h-0 opacity-0 md:max-h-0 md:opacity-0"}`}>
+        {desc}
+      </div>
+    </div>
+  );
+}
+
+// ── Pipeline Stages Diagram ────────────────────────────
+function PipelineStages() {
+  const stages = ["BACKLOG", "QUALIFIED", "RESEARCHING", "SCORING", "REVIEW", "BUILDING", "LIVE"];
+  return (
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 flex items-center justify-center">
+      <div className="flex items-center gap-1 flex-wrap justify-center">
+        {stages.map((stage, i) => (
+          <div key={stage} className="flex items-center gap-1">
+            <span className={`text-[10px] font-medium px-2 py-1 rounded-full whitespace-nowrap ${
+              stage === "SCORING"
+                ? "bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/30"
+                : "text-[var(--text-muted)] bg-[var(--bg)] border border-[var(--border)]"
+            }`}>
+              {stage}
+            </span>
+            {i < stages.length - 1 && (
+              <span className="text-[var(--text-muted)]/40 text-xs">&rsaquo;</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Landing Section ────────────────────────────────────
 function Hero({ onStart }: { onStart: () => void }) {
-  const scrollToPricing = () => {
-    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <div className="gradient-mesh min-h-screen">
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
         <span className="text-lg font-bold tracking-tight">Clawd Up</span>
-        <a href="#pricing" onClick={(e) => { e.preventDefault(); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }} className="px-4 py-2 text-sm font-medium rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors cursor-pointer">Get Started</a>
+        <div className="flex items-center gap-4 text-sm">
+          <a href="#how-it-works" onClick={(e) => { e.preventDefault(); document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" }); }} className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:inline">How It Works</a>
+          <a href="#pricing" onClick={(e) => { e.preventDefault(); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }} className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:inline">Pricing</a>
+          <a href="#faq" onClick={(e) => { e.preventDefault(); document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" }); }} className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:inline">FAQ</a>
+          <a href={CHECKOUT_STARTER} target="_blank" rel="noopener noreferrer" className="px-4 py-2 font-medium rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors cursor-pointer">Get Started</a>
+        </div>
       </nav>
 
       {/* Hero */}
       <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
+        <div className="inline-block px-3 py-1 rounded-full border border-[var(--border)] text-xs text-[var(--text-muted)] mb-6">
+          Pre-configured multi-agent system for solopreneurs
+        </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">
-          Kill bad ideas before<br />
-          <span className="text-[#9b9bb0]">they cost you months.</span>
+          Find the opportunity.<br />
+          Decide if it&apos;s real.<br />
+          <span className="text-[var(--accent)]">Build it overnight.</span>
         </h1>
-        <p className="text-lg text-[#9b9bb0] max-w-xl mx-auto mb-10">
-          Three AI agents that scout opportunities, run deep dives, and deliver
-          your morning brief. You build. They operate. $10/mo.
+        <p className="text-lg text-[var(--text-muted)] max-w-xl mx-auto mb-10 leading-relaxed">
+          Three AI agents that find opportunities, validate them, and manage your pipeline.
+          Upgrade to six and they&apos;ll build, test, and ship for you too.
         </p>
-        <BuyButton className="mx-auto" label="Subscribe — $10/mo" href={CHECKOUT_PRO} />
+        <div className="flex items-center justify-center gap-4 flex-wrap">
+          <BuyButton className="mx-auto" label="Get Started &mdash; $15" href={CHECKOUT_STARTER} />
+          <a href="#how-it-works" onClick={(e) => { e.preventDefault(); document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" }); }} className="px-6 py-3 text-sm font-medium rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--text-muted)] transition-colors">
+            See how it works
+          </a>
+        </div>
       </section>
 
-      {/* Sample Output (moved above agent cards) */}
-      <section className="max-w-3xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold mb-8 text-center">What your morning looks like</h2>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 overflow-hidden">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-3 h-3 rounded-full bg-red-500/60"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500/60"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500/60"></div>
-            <span className="text-xs text-[var(--text-muted)] ml-2">Morning Brief — 8:00 AM</span>
+      {/* Stats Bar */}
+      <section className="max-w-4xl mx-auto px-6 pb-24">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[var(--text-muted)]">
+          {["3-6 agents", "92% kill rate", "327+ signals", "7 pipeline stages", "Nightly builds"].map((stat, i) => (
+            <span key={stat} className="flex items-center gap-3">
+              {i > 0 && <span className="text-[var(--border)] hidden sm:inline">|</span>}
+              <span>{stat}</span>
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* Product Demo */}
+      <ProductDemo />
+
+      {/* Find / Decide / Build */}
+      <section id="how-it-works" className="max-w-4xl mx-auto px-6 pb-24">
+        <h2 className="text-2xl font-bold mb-2 text-center">Three phases. Up to six agents. One system.</h2>
+        <p className="text-sm text-[var(--text-muted)] text-center mb-16">Every opportunity follows the same path. Your agents handle each step.</p>
+
+        <div className="space-y-16">
+          {/* FIND */}
+          <div className="border-l-2 border-[#6366f1]/40 pl-6">
+            <span className="inline-block text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border bg-indigo-500/10 text-indigo-400 border-indigo-500/20 mb-4">FIND</span>
+            <h3 className="text-2xl font-bold mb-2">Surface the signals that matter</h3>
+            <p className="text-[var(--text-muted)] leading-relaxed max-w-lg mb-6">
+              Scout scans Reddit, Hacker News, X, and niche communities 24/7.
+              92% of signals get killed by pattern matching before they reach you.
+              What survives lands in your morning brief, scored and ready to evaluate.
+            </p>
+            <div className="grid gap-4 md:grid-cols-2">
+              <AgentCard name="Scout" role="Signal hunter" desc="Scans Reddit, HN, X, and 12+ sources for bleeding-neck problems. Applies kill patterns to filter noise. Delivers scored leads daily." color="#6366f1" />
+              <AgentCard name="Researcher" role="Market validator" desc="Deep-dives competitors, sizes TAM, maps the landscape. Produces structured analysis using the 5S framework. Kills ideas with data, not gut feel." color="#818cf8" />
+            </div>
           </div>
-          <div className="space-y-3 text-sm text-[var(--text-muted)] font-mono leading-relaxed">
-            <p className="text-[var(--text)] font-semibold font-sans">3 New Signals</p>
-            <p><span className="text-[var(--green)]">PROMOTED</span> AI invoice matching for construction — 18.5/25 — &quot;I&apos;d pay $200/mo to stop doing this&quot;</p>
-            <p><span className="text-yellow-400">WATCHING</span> Return fraud detection for Shopify — 14/25 — Heavy competition, needs wedge</p>
-            <p><span className="text-red-400">KILLED</span> Pet subscription box — Physical product + saturated market</p>
-            <p className="pt-2 border-t border-[var(--border)] text-xs">Pipeline: 3 active, 1 advanced to SCORING, 26 killed lifetime. Generated in 4.2s.</p>
+
+          {/* DECIDE */}
+          <div className="border-l-2 border-amber-500/40 pl-6">
+            <span className="inline-block text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border bg-amber-500/10 text-amber-400 border-amber-500/20 mb-4">DECIDE</span>
+            <h3 className="text-2xl font-bold mb-2">Score, stress-test, and commit</h3>
+            <p className="text-[var(--text-muted)] leading-relaxed max-w-lg mb-6">
+              Every opportunity gets scored /25 across five dimensions: Signal, Size, Shape, Speed, and Stress Test.
+              The pipeline tracks stage gates from Backlog to Live.
+              Nothing moves forward without evidence.
+            </p>
+            <div className="grid gap-4 md:grid-cols-2">
+              <AgentCard name="Operator" role="Pipeline manager" desc="Manages the 7-stage pipeline with enforced gates. Runs morning briefs, coordinates handoffs between agents, and tracks every opportunity from signal to shipped product." color="#10b981" />
+              <PipelineStages />
+            </div>
+          </div>
+
+          {/* BUILD */}
+          <div className="border-l-2 border-green-500/40 pl-6">
+            <span className="inline-block text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border bg-green-500/10 text-green-400 border-green-500/20 mb-4">BUILD</span>
+            <h3 className="text-2xl font-bold mb-2">Ship while you sleep</h3>
+            <p className="text-[var(--text-muted)] leading-relaxed max-w-lg mb-6">
+              Forge builds landing pages, APIs, and components from specs.
+              Designer audits every build for UX quality. QA runs automated checks before anything goes live.
+              The nightly build cycle means you wake up to deployed products.
+            </p>
+            <div className="grid gap-4 md:grid-cols-3">
+              <AgentCard name="Forge" role="Builder" desc="Reads design specs and builds production code. React components, API routes, landing pages, checkout flows. Commits, type-checks, and deploys." color="#f59e0b" pro />
+              <AgentCard name="Designer" role="UX auditor" desc="Audits every page against design principles. Scores UX quality, flags violations, and writes specs for Forge to implement. Your quality gate." color="#ec4899" pro />
+              <AgentCard name="QA" role="Quality enforcer" desc="Tests what Forge builds. Lighthouse scores, accessibility checks, broken links, checkout flow verification. Blocks deploys that don't pass." color="#ef4444" pro />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* System Components */}
-      <section className="max-w-5xl mx-auto px-6 pb-20 grid md:grid-cols-3 gap-6">
-        {[
-          {
-            name: "Signal Detection",
-            desc: "Scans Reddit, X, and Hacker News for bleeding-neck problems with money behind them. Real pain, real spend.",
-            tag: "Scout Agent",
-          },
-          {
-            name: "Opportunity Analysis",
-            desc: "5S deep dives that find reasons NOT to build before you waste a month. Signal, Size, Shape, Speed, Stress Test.",
-            tag: "Researcher Agent",
-          },
-          {
-            name: "Autonomous Operations",
-            desc: "Morning briefs, pipeline enforcement, nightly builds. Runs while you sleep so you wake up to progress.",
-            tag: "Operator Agent",
-          },
-        ].map((a) => (
-          <div
-            key={a.name}
-            className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 hover:bg-[var(--bg-card-hover)] transition-colors"
-          >
-            <div className="text-xs font-medium text-[var(--accent)] mb-2 uppercase tracking-wider">
-              {a.tag}
-            </div>
-            <h3 className="text-lg font-semibold mb-2">{a.name}</h3>
-            <p className="text-sm text-[var(--text-muted)] leading-relaxed">{a.desc}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* Stats */}
-      <section className="max-w-4xl mx-auto px-6 pb-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      {/* System Architecture */}
+      <section className="max-w-3xl mx-auto px-6 pb-24">
+        <h2 className="text-2xl font-bold mb-8 text-center">How it fits together</h2>
+        <div className="space-y-3">
           {[
-            { value: "92%", label: "Kill rate on bad ideas" },
-            { value: "327+", label: "Signals evaluated autonomously" },
-            { value: "3 days", label: "To first revenue signal" },
-            { value: "5 min", label: "Install to first brief" },
-          ].map((stat) => (
-            <div key={stat.label}>
-              <div className="text-2xl font-bold text-[var(--text)]">{stat.value}</div>
-              <div className="text-xs text-[var(--text-muted)] mt-1">{stat.label}</div>
+            { layer: "AGENTS", detail: "Scout, Researcher, Operator, Forge, QA, Designer", sub: "Six specialists. Shared memory. Coordinated handoffs." },
+            { layer: "SKILLS", detail: "14 vetted capabilities", sub: "Signal scanning, deep dives, pipeline management, UX audit, build orchestration." },
+            { layer: "CRONS", detail: "23 scheduled jobs", sub: "Morning briefs, signal triage, nightly builds, health checks. Runs while you sleep." },
+            { layer: "MEMORY", detail: "Persistent context", sub: "Vault, daily notes, decay scoring. Agents remember across sessions." },
+          ].map((l) => (
+            <div key={l.layer} className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-xs font-bold tracking-widest text-[var(--accent)] uppercase">{l.layer}</span>
+                <span className="text-xs text-[var(--text-muted)]">&middot; {l.detail}</span>
+              </div>
+              <p className="text-sm text-[var(--text-muted)]">{l.sub}</p>
             </div>
           ))}
         </div>
-        <p className="text-center text-xs text-[var(--text-muted)] mt-6">
-          Built for a real solo operation. Battle-tested daily since February 2026.
-        </p>
       </section>
 
-      {/* Founder Testimonial */}
-      <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
-        <blockquote className="text-lg italic text-[var(--text-muted)] leading-relaxed max-w-2xl mx-auto">
-          &ldquo;I built Clawd Up for myself. Three agents running 24/7, scanning Reddit and X, killing bad ideas before I waste time on them. After a month of daily use, I&apos;m selling what works.&rdquo;
+      {/* Comparison Table */}
+      <section className="max-w-3xl mx-auto px-6 pb-24">
+        <h2 className="text-2xl font-bold mb-8 text-center">Manual vs Clawd Up</h2>
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[var(--border)]">
+                <th className="text-left px-5 py-3 text-[var(--text-muted)] font-medium">Feature</th>
+                <th className="text-left px-5 py-3 text-[var(--text-muted)] font-medium">Manual</th>
+                <th className="text-left px-5 py-3 text-[var(--text-muted)] font-medium">Clawd Up</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["Signal scanning", "Set up scrapers, RSS, alerts", "12+ sources, auto-scored"],
+                ["Kill pattern filtering", "Review every signal yourself", "92% auto-killed"],
+                ["Market research", "Hours per opportunity", "Structured 5S deep dive"],
+                ["Pipeline management", "Spreadsheet or Notion", "7-stage gated pipeline"],
+                ["Building from specs", "Write code yourself", "Forge ships nightly"],
+                ["QA and UX checks", "Manual testing", "Automated before deploy"],
+                ["Total setup time", "Weeks", "5 minutes"],
+              ].map(([feature, manual, clawd]) => (
+                <tr key={feature} className="border-b border-[var(--border)] last:border-b-0">
+                  <td className="px-5 py-3 text-[var(--text)] font-medium">{feature}</td>
+                  <td className="px-5 py-3 text-[var(--text-muted)]">{manual}</td>
+                  <td className="px-5 py-3 text-[var(--green)]">{clawd}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Testimonial */}
+      <section className="max-w-3xl mx-auto px-6 py-20 text-center">
+        <blockquote className="text-xl sm:text-2xl italic text-[var(--text)] leading-relaxed max-w-2xl mx-auto">
+          &ldquo;I used to spend my mornings scanning Reddit and HN for ideas.
+          Now I wake up to a brief with scored signals, a pipeline with
+          stage gates, and code that shipped overnight.
+          The agents didn&apos;t just find opportunities &mdash; they built them.&rdquo;
         </blockquote>
-        <p className="text-sm text-[var(--text-muted)] mt-4">&mdash; Jamie, Microbuilder</p>
-      </section>
-
-      {/* What You Get */}
-      <section className="max-w-3xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold mb-8 text-center">What&apos;s in the box</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          {[
-            "3 autonomous agents with expert-grade system prompts",
-            "Pre-configured cron schedules (briefs, triage, nightly builds)",
-            "Pipeline system with stage gates and 26+ kill patterns",
-            "Memory system with decay scoring, vault, and daily notes",
-            "Self-healing operations with health monitoring",
-            "Telegram or Discord notifications out of the box",
-            "One-command install, first brief in 5 minutes",
-            "Your server, your data, your API keys. Nothing phones home.",
-          ].map((item) => (
-            <div key={item} className="flex items-start gap-3 text-sm text-[var(--text-muted)]">
-              <span className="text-[var(--green)] mt-0.5 shrink-0">&#10003;</span>
-              {item}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="max-w-3xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold mb-8 text-center">FAQ</h2>
-        <div className="max-w-2xl mx-auto">
-          <FAQItem
-            q="What is OpenClaw?"
-            a="OpenClaw is a free, open-source AI agent framework. Clawd Up is a pre-configured agent package that runs on top of it. Install OpenClaw first, then add Clawd Up in one command."
-          />
-          <FAQItem
-            q="What do I need to run this?"
-            a="A Linux server (VPS or local) with Node.js 18+, an OpenClaw gateway, and an API key from Anthropic, OpenAI, or Google. A $5/mo VPS works fine."
-          />
-          <FAQItem
-            q="What's the difference between Starter and Pro?"
-            a="Starter is a one-time $15 purchase with no updates. Pro is $10/month with ongoing updates and new agents. Both include the full starter kit."
-          />
-          <FAQItem
-            q="Is there a demo?"
-            a="The morning brief sample above is real output from a live system. Check the GitHub repo for the full agent configs, cron schedules, and pipeline setup."
-          />
-        </div>
+        <p className="text-sm text-[var(--text-muted)] mt-6">&mdash; Jamie, solo founder</p>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="max-w-4xl mx-auto px-6 pb-20">
+      <section id="pricing" className="max-w-5xl mx-auto px-6 pb-24">
         <h2 className="text-2xl font-bold mb-8 text-center">Pricing</h2>
-        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6">
           {/* Starter */}
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 flex flex-col">
             <div className="flex items-center gap-2 mb-4">
               <h3 className="text-lg font-semibold">Starter</h3>
               <span className="text-xs font-medium px-2 py-0.5 rounded-full border border-[var(--border)] text-[var(--text-muted)]">One-time</span>
             </div>
             <div className="text-3xl font-bold mb-1">$15</div>
-            <div className="text-sm text-[var(--text-muted)] mb-6">one-time purchase, yours forever</div>
-            <ul className="space-y-2 text-sm mb-6">
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Full agent starter kit</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Install script + setup wizard</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Scout + Researcher + Operator agents</li>
+            <div className="text-sm text-[var(--text-muted)] mb-6">Yours forever. No subscription.</div>
+            <ul className="space-y-2 text-sm mb-6 flex-1">
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>3 agents: Scout, Researcher, Operator</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Signal scanning across Reddit, X, HN</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>7-stage pipeline with enforced gates</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Morning briefs + kill pattern filtering</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>5S deep dive framework</li>
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Email support</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Self-hosted, your data stays yours</li>
               <li className="text-[var(--text-muted)]/40 line-through"><span className="mr-2 opacity-40">&#10003;</span>Ongoing updates</li>
               <li className="text-[var(--text-muted)]/40 line-through"><span className="mr-2 opacity-40">&#10003;</span>New agent templates</li>
               <li className="text-[var(--text-muted)]/40 line-through"><span className="mr-2 opacity-40">&#10003;</span>Priority support</li>
             </ul>
-            <p className="text-xs text-[var(--text-muted)] mb-4">Requires <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text)]">OpenClaw</a> (free, open source)</p>
             <a
               href={CHECKOUT_STARTER}
               target="_blank"
@@ -260,26 +441,94 @@ function Hero({ onStart }: { onStart: () => void }) {
             </a>
           </div>
 
-          {/* Pro */}
-          <div className="rounded-xl border-2 border-[var(--accent)] bg-[var(--bg-card)] p-8 relative">
+          {/* Starter + Updates (Highlighted) */}
+          <div className="rounded-xl border-2 border-[var(--accent)] bg-[var(--bg-card)] p-8 flex flex-col relative">
             <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-lg font-semibold">Pro</h3>
+              <h3 className="text-lg font-semibold">Starter + Updates</h3>
               <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--accent)] text-white">Most Popular</span>
             </div>
-            <div className="text-3xl font-bold mb-1">$10<span className="text-lg font-normal text-[var(--text-muted)]">/mo</span></div>
-            <div className="text-sm text-[var(--text-muted)] mb-6">monthly subscription, cancel anytime</div>
-            <ul className="space-y-2 text-sm mb-6">
+            <div className="text-3xl font-bold mb-1">$15 <span className="text-lg font-normal text-[var(--text-muted)]">+ $10/mo</span></div>
+            <div className="text-sm text-[var(--text-muted)] mb-6">$15 one-time + $10/mo for live updates. Cancel anytime, keep the agents.</div>
+            <ul className="space-y-2 text-sm mb-6 flex-1">
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Everything in Starter, plus:</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Monthly agent updates</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>New agent templates as released</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Monthly agent config updates</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>New kill patterns + scoring rubrics</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>New skills and cron templates as released</li>
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Priority email support</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Early access to new features</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>30-day money-back guarantee on subscription</li>
             </ul>
-            <p className="text-xs text-[var(--text-muted)] mb-4">Requires <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text)]">OpenClaw</a> (free, open source)</p>
-            <BuyButton className="w-full" label="Subscribe &mdash; $10/mo" href={CHECKOUT_PRO} />
-            <p className="text-xs text-center text-[var(--text-muted)] mt-3">30-day money-back guarantee. No questions asked.</p>
+            <BuyButton className="w-full" label="Get Started &mdash; $15" href={CHECKOUT_STARTER} />
+            <p className="text-xs text-center text-[var(--text-muted)] mt-3">Subscription add-on available after purchase.</p>
+          </div>
+
+          {/* Pro */}
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 flex flex-col relative">
+            <div className="flex items-center gap-2 mb-4">
+              <h3 className="text-lg font-semibold">Pro</h3>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full border border-[var(--border)] text-[var(--text-muted)]">Coming Soon</span>
+            </div>
+            <div className="text-3xl font-bold mb-1">$50</div>
+            <div className="text-sm text-[var(--text-muted)] mb-6">The full team. Yours forever.</div>
+            <ul className="space-y-2 text-sm mb-6 flex-1">
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Everything in Starter, plus:</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Forge agent (builds code from specs)</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Designer agent (UX audits)</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>QA agent (automated testing)</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Orchestration engine (agent coordination)</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Nightly builds &mdash; ship while you sleep</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Optional: +$25/mo for live updates</li>
+            </ul>
+            <a
+              href="mailto:info@microbuilder.co?subject=Clawd%20Up%20Pro%20Waitlist"
+              className="block w-full px-8 py-3 text-sm font-semibold rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-colors text-center"
+            >
+              Join Waitlist
+            </a>
           </div>
         </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="max-w-3xl mx-auto px-6 pb-24">
+        <h2 className="text-2xl font-bold mb-8 text-center">FAQ</h2>
+        <div className="max-w-2xl mx-auto">
+          <FAQItem
+            q="What do I need to run this?"
+            a="A VPS (we recommend Hetzner CAX21, ~$8/mo), Node.js 18+, and an Anthropic API key. The install wizard walks you through everything in 5 minutes."
+          />
+          <FAQItem
+            q="What agents are included?"
+            a="Starter includes 3 agents: Scout (finds signals), Researcher (validates markets), and Operator (manages pipeline). Pro adds 3 more: Forge (builds code), Designer (audits UX), and QA (tests builds). All agents share memory and coordinate automatically."
+          />
+          <FAQItem
+            q="How much does the AI API cost to run?"
+            a="Most users spend $30-80/mo on API calls. Scout and Researcher use Sonnet (cheap). Forge and Operator use Opus for complex work. You control the budget."
+          />
+          <FAQItem
+            q="What can Forge actually build?"
+            a="Landing pages, API routes, React components, checkout flows, and full micro-SaaS frontends. It reads design specs and produces production code. QA tests it before deploy."
+          />
+          <FAQItem
+            q="What's the pipeline?"
+            a="A 7-stage system: Backlog, Qualified, Researching, Scoring, Review, Building, Live. Each stage has gate criteria. Nothing advances without evidence. The Operator manages transitions automatically."
+          />
+          <FAQItem
+            q="Why self-hosted?"
+            a="Your data, your API keys, your agents. We never see your pipeline, signals, or business strategy. You own everything."
+          />
+          <FAQItem
+            q="Can I cancel?"
+            a="Yes, anytime. You keep all your configs, agents, and pipeline data. Updates stop, but nothing breaks."
+          />
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="max-w-3xl mx-auto px-6 pb-24 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-2">Signal to shipped product.</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[var(--accent)]">While you sleep.</h2>
+        <p className="text-[var(--text-muted)] mb-8">Three agents. Seven pipeline stages. One purchase.</p>
+        <BuyButton label="Get Started &mdash; $15" href={CHECKOUT_STARTER} />
       </section>
 
       {/* Footer */}
@@ -428,7 +677,7 @@ function Onboarding({ onBack, purchased }: { onBack: () => void; purchased?: boo
         {purchased ? (
           <div className="mb-6">
             <div className="inline-block px-3 py-1 rounded-full bg-[var(--green)]/10 text-[var(--green)] text-xs font-medium mb-3">
-              ✓ Purchase complete
+              &#10003; Purchase complete
             </div>
             <h2 className="text-xl font-bold">Thanks for purchasing Clawd Up!</h2>
             <p className="text-sm text-[var(--text-muted)] mt-1">
