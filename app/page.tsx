@@ -39,7 +39,9 @@ const DEFAULT: FormData = {
 
 // ── Constants ──────────────────────────────────────────
 const CHECKOUT_STARTER = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c?locale=en&currency=USD";
-const CHECKOUT_PRO = "https://microbuilderco.lemonsqueezy.com/checkout/buy/SUBSCRIPTION_ID?currency=USD&locale=en";
+// TODO: Replace with actual Pro subscription product ID once Jamie creates it in LemonSqueezy
+// Falling back to Starter checkout URL until then
+const CHECKOUT_PRO = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c?locale=en&currency=USD";
 
 // ── Buy Button ─────────────────────────────────────────
 function BuyButton({ className = "", label = "Get Started", href = CHECKOUT_PRO }: { className?: string; label?: string; href?: string }) {
