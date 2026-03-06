@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Three AI agents that scout opportunities, kill bad ideas, and run your pipeline while you build. One-time purchase. Runs on OpenClaw.",
   openGraph: {
     title: "Clawd Up — The Agentic OS for Solopreneurs",
-    description: "Scout. Researcher. Operator. Your AI ops team for $15.",
+    description: "Scout. Researcher. Operator. Your AI ops team for $10/mo.",
     type: "website",
   },
 };

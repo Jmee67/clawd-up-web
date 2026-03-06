@@ -41,7 +41,7 @@ const DEFAULT: FormData = {
 const CHECKOUT_URL = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c?locale=en&currency=USD";
 
 // ── Buy Button ─────────────────────────────────────────
-function BuyButton({ className = "", label = "Buy now — $15" }: { className?: string; label?: string }) {
+function BuyButton({ className = "", label = "Get Started — $10/mo" }: { className?: string; label?: string }) {
   return (
     <a
       href={CHECKOUT_URL}
@@ -84,7 +84,7 @@ function Hero({ onStart }: { onStart: () => void }) {
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
         <span className="text-lg font-bold tracking-tight">Clawd Up</span>
-        <a href={CHECKOUT_URL} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm font-medium rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors">Buy now</a>
+        <a href={CHECKOUT_URL} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm font-medium rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors">Get Started</a>
       </nav>
 
       {/* Hero */}
@@ -95,7 +95,7 @@ function Hero({ onStart }: { onStart: () => void }) {
         </h1>
         <p className="text-lg text-[#9b9bb0] max-w-xl mx-auto mb-10">
           Three AI agents that scout opportunities, run deep dives, and deliver
-          your morning brief. You build. They operate. $15 one-time.
+          your morning brief. You build. They operate. $10/mo.
         </p>
         <BuyButton className="mx-auto" />
       </section>
@@ -215,8 +215,8 @@ function Hero({ onStart }: { onStart: () => void }) {
             a="A Linux server (VPS or local) with Node.js 18+, an OpenClaw gateway, and an API key from Anthropic, OpenAI, or Google. A $5/mo VPS works fine."
           />
           <FAQItem
-            q="What's included in the $9/mo weekly updates?"
-            a="New agent personalities (SOULs), skills, signal sources, kill patterns, and pipeline improvements. Everything we build and battle-test on our own operation. Cancel anytime."
+            q="What's included in the subscription?"
+            a="All 3 agents, every cron and template, plus weekly updates: new agent personalities (SOULs), skills, signal sources, kill patterns, and pipeline improvements. Everything we build and battle-test on our own operation. Cancel anytime."
           />
           <FAQItem
             q="Is there a demo?"
@@ -229,22 +229,22 @@ function Hero({ onStart }: { onStart: () => void }) {
       <section id="pricing" className="max-w-3xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-2xl font-bold mb-4">Pricing</h2>
         <div className="inline-block rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 text-left max-w-sm">
-          <div className="text-3xl font-bold mb-1">$15</div>
-          <div className="text-sm text-[var(--text-muted)] mb-4">one-time, own it forever</div>
+          <div className="text-3xl font-bold mb-1">$10<span className="text-lg font-normal text-[var(--text-muted)]">/mo</span></div>
+          <div className="text-sm text-[var(--text-muted)] mb-4">monthly subscription, cancel anytime</div>
           <ul className="space-y-2 text-sm text-[var(--text-muted)] mb-6">
             <li><span className="text-[var(--green)] mr-2">&#10003;</span>All 3 agents</li>
             <li><span className="text-[var(--green)] mr-2">&#10003;</span>All crons, templates, pipeline</li>
-            <li><span className="text-[var(--green)] mr-2">&#10003;</span>Lifetime access to current version</li>
+            <li><span className="text-[var(--green)] mr-2">&#10003;</span>Continuous updates included</li>
           </ul>
           <p className="text-xs text-[var(--text-muted)] mb-4">Requires <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text)]">OpenClaw</a> (free, open source)</p>
           <BuyButton className="w-full" />
           <p className="text-xs text-center text-[var(--text-muted)] mt-3">30-day money-back guarantee. No questions asked.</p>
           <div className="mt-4 pt-4 border-t border-[var(--border)]">
             <div className="text-sm font-medium text-[var(--text)] mb-1">
-              + Weekly Updates — $9/mo
+              Includes weekly updates
             </div>
             <div className="text-xs text-[var(--text-muted)]">
-              New SOULs, skills, signal sources, kill patterns. Cancel anytime.
+              New SOULs, skills, signal sources, kill patterns. All included in your subscription.
             </div>
           </div>
         </div>
