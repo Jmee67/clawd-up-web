@@ -224,6 +224,26 @@ export default function ChatWidget() {
         <div ref={bottomRef} />
       </div>
 
+      {/* Fallback email */}
+      <div
+        style={{
+          padding: "4px 16px",
+          textAlign: "center",
+          fontSize: "12px",
+          opacity: 0.6,
+          color: "var(--text-muted)",
+          flexShrink: 0,
+        }}
+      >
+        Need human help? Email{" "}
+        <a
+          href="mailto:info@microbuilder.co"
+          style={{ color: "inherit", textDecoration: "underline" }}
+        >
+          info@microbuilder.co
+        </a>
+      </div>
+
       {/* Input */}
       <div
         style={{
