@@ -416,11 +416,9 @@ function Hero({ onStart }: { onStart: () => void }) {
 
       {/* Built in Public */}
       <section className="max-w-3xl mx-auto px-6 py-20 text-center">
-        <p className="text-lg text-[var(--text)] font-semibold mb-2">Built in public. Follow the build log.</p>
+        <p className="text-lg text-[var(--text)] font-semibold mb-2">Built in public. Follow the journey.</p>
         <p className="text-sm text-[var(--text-muted)]">
-          <a href="https://github.com/Jmee67/clawd-up" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text)] transition-colors">GitHub</a>
-          {" "}&middot;{" "}
-          <a href="https://x.com/Microbuilderco" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text)] transition-colors">@Microbuilderco</a>
+          <a href="https://x.com/Microbuilderco" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text)] transition-colors">@Microbuilderco on X</a>
         </p>
       </section>
 
