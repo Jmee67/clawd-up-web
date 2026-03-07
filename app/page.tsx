@@ -191,10 +191,8 @@ function AgentCard({ name, role, desc, color, pro }: { name: string; role: strin
   const [expanded, setExpanded] = useState(false);
   return (
     <div
-      className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer relative"
+      className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer md:cursor-default relative"
       onClick={() => setExpanded(!expanded)}
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={() => setExpanded(false)}
     >
       {pro && (
         <span className="absolute top-3 right-3 text-[10px] font-bold px-1.5 py-0.5 rounded bg-[var(--accent)]/10 text-[var(--accent)] uppercase tracking-wider">Pro</span>
@@ -204,7 +202,8 @@ function AgentCard({ name, role, desc, color, pro }: { name: string; role: strin
         <h4 className="text-sm font-semibold text-[var(--text)]">{name}</h4>
       </div>
       <p className="text-xs font-medium text-[var(--accent)] mb-1">{role}</p>
-      <div className={`text-sm text-[var(--text-muted)] leading-relaxed transition-all duration-200 overflow-hidden ${expanded ? "max-h-40 opacity-100" : "max-h-0 opacity-0 md:max-h-0 md:opacity-0"}`}>
+      {/* Mobile: expand/collapse. Desktop: always visible */}
+      <div className={`text-sm text-[var(--text-muted)] leading-relaxed transition-all duration-200 overflow-hidden md:max-h-40 md:opacity-100 ${expanded ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}>
         {desc}
       </div>
     </div>
@@ -215,11 +214,11 @@ function AgentCard({ name, role, desc, color, pro }: { name: string; role: strin
 function PipelineStages() {
   const stages = ["BACKLOG", "QUALIFIED", "RESEARCHING", "SCORING", "REVIEW", "BUILDING", "LIVE"];
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 flex items-center justify-center">
-      <div className="flex items-center gap-1 flex-wrap justify-center">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 flex items-center justify-center overflow-x-auto">
+      <div className="flex items-center gap-1 flex-nowrap">
         {stages.map((stage, i) => (
           <div key={stage} className="flex items-center gap-1">
-            <span className={`text-[10px] font-medium px-2 py-1 rounded-full whitespace-nowrap ${
+            <span className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap ${
               stage === "SCORING"
                 ? "bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/30"
                 : "text-[var(--text-muted)] bg-[var(--bg)] border border-[var(--border)]"
@@ -236,6 +235,46 @@ function PipelineStages() {
   );
 }
 
+// ── Pro Waitlist Email Capture ──────────────────────────
+function ProWaitlistCapture() {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = () => {
+    if (!email.trim() || !email.includes("@")) return;
+    const subject = encodeURIComponent(`Pro Waitlist: ${email}`);
+    window.open(`mailto:info@microbuilder.co?subject=${subject}`, "_blank");
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="text-sm text-[var(--green)] text-center py-3">
+        Thanks! We&apos;ll notify you when Pro launches.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="you@example.com"
+        className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-4 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+        onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+      />
+      <button
+        onClick={handleSubmit}
+        className="block w-full px-8 py-3 text-sm font-semibold rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-colors text-center"
+      >
+        Notify me when Pro launches
+      </button>
+    </div>
+  );
+}
+
 // ── Landing Section ────────────────────────────────────
 function Hero({ onStart }: { onStart: () => void }) {
   return (
@@ -247,14 +286,14 @@ function Hero({ onStart }: { onStart: () => void }) {
           <a href="#how-it-works" onClick={(e) => { e.preventDefault(); document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" }); }} className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:inline">How It Works</a>
           <a href="#pricing" onClick={(e) => { e.preventDefault(); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }} className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:inline">Pricing</a>
           <a href="#faq" onClick={(e) => { e.preventDefault(); document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" }); }} className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:inline">FAQ</a>
-          <a href={CHECKOUT_STARTER} target="_blank" rel="noopener noreferrer" className="px-4 py-2 font-medium rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors cursor-pointer">Get Started</a>
+          <a href={CHECKOUT_STARTER} target="_blank" rel="noopener noreferrer" className="px-4 py-2 font-medium rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white transition-colors cursor-pointer">Get Started</a>
         </div>
       </nav>
 
       {/* Hero */}
       <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
         <div className="inline-block px-3 py-1 rounded-full border border-[var(--border)] text-xs text-[var(--text-muted)] mb-6">
-          Pre-configured multi-agent system for solopreneurs
+          AI agents that find, validate, and build micro-SaaS products
         </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">
           Find the opportunity.<br />
@@ -273,20 +312,20 @@ function Hero({ onStart }: { onStart: () => void }) {
         </div>
       </section>
 
+      {/* Product Demo (moved above stats bar) */}
+      <ProductDemo />
+
       {/* Stats Bar */}
       <section className="max-w-4xl mx-auto px-6 pb-24">
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[var(--text-muted)]">
-          {["3-6 agents", "92% kill rate", "327+ signals", "7 pipeline stages", "Nightly builds"].map((stat, i) => (
+          {["3-6 AI agents", "92% noise filtered out", "327+ signals scanned", "7 pipeline stages", "Ships code overnight"].map((stat, i) => (
             <span key={stat} className="flex items-center gap-3">
-              {i > 0 && <span className="text-[var(--border)] hidden sm:inline">|</span>}
+              {i > 0 && <span className="text-[var(--border)]">&middot;</span>}
               <span>{stat}</span>
             </span>
           ))}
         </div>
       </section>
-
-      {/* Product Demo */}
-      <ProductDemo />
 
       {/* Find / Decide / Build */}
       <section id="how-it-works" className="max-w-4xl mx-auto px-6 pb-24">
@@ -342,31 +381,10 @@ function Hero({ onStart }: { onStart: () => void }) {
         </div>
       </section>
 
-      {/* System Architecture */}
-      <section className="max-w-3xl mx-auto px-6 pb-24">
-        <h2 className="text-2xl font-bold mb-8 text-center">How it fits together</h2>
-        <div className="space-y-3">
-          {[
-            { layer: "AGENTS", detail: "Scout, Researcher, Operator, Forge, QA, Designer", sub: "Six specialists. Shared memory. Coordinated handoffs." },
-            { layer: "SKILLS", detail: "14 vetted capabilities", sub: "Signal scanning, deep dives, pipeline management, UX audit, build orchestration." },
-            { layer: "CRONS", detail: "23 scheduled jobs", sub: "Morning briefs, signal triage, nightly builds, health checks. Runs while you sleep." },
-            { layer: "MEMORY", detail: "Persistent context", sub: "Vault, daily notes, decay scoring. Agents remember across sessions." },
-          ].map((l) => (
-            <div key={l.layer} className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
-              <div className="flex items-baseline gap-2 mb-1">
-                <span className="text-xs font-bold tracking-widest text-[var(--accent)] uppercase">{l.layer}</span>
-                <span className="text-xs text-[var(--text-muted)]">&middot; {l.detail}</span>
-              </div>
-              <p className="text-sm text-[var(--text-muted)]">{l.sub}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Comparison Table */}
       <section className="max-w-3xl mx-auto px-6 pb-24">
         <h2 className="text-2xl font-bold mb-8 text-center">Manual vs Clawd Up</h2>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
+        <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--bg-card)]">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[var(--border)]">
@@ -386,7 +404,7 @@ function Hero({ onStart }: { onStart: () => void }) {
                 ["Total setup time", "Weeks", "5 minutes"],
               ].map(([feature, manual, clawd]) => (
                 <tr key={feature} className="border-b border-[var(--border)] last:border-b-0">
-                  <td className="px-5 py-3 text-[var(--text)] font-medium">{feature}</td>
+                  <td className="px-5 py-3 text-[var(--text)] font-medium whitespace-nowrap">{feature}</td>
                   <td className="px-5 py-3 text-[var(--text-muted)]">{manual}</td>
                   <td className="px-5 py-3 text-[var(--green)]">{clawd}</td>
                 </tr>
@@ -396,15 +414,14 @@ function Hero({ onStart }: { onStart: () => void }) {
         </div>
       </section>
 
-      {/* Testimonial */}
+      {/* Built in Public */}
       <section className="max-w-3xl mx-auto px-6 py-20 text-center">
-        <blockquote className="text-xl sm:text-2xl italic text-[var(--text)] leading-relaxed max-w-2xl mx-auto">
-          &ldquo;I used to spend my mornings scanning Reddit and HN for ideas.
-          Now I wake up to a brief with scored signals, a pipeline with
-          stage gates, and code that shipped overnight.
-          The agents didn&apos;t just find opportunities &mdash; they built them.&rdquo;
-        </blockquote>
-        <p className="text-sm text-[var(--text-muted)] mt-6">&mdash; Jamie, solo founder</p>
+        <p className="text-lg text-[var(--text)] font-semibold mb-2">Built in public. Follow the build log.</p>
+        <p className="text-sm text-[var(--text-muted)]">
+          <a href="https://github.com/Jmee67/clawd-up" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text)] transition-colors">GitHub</a>
+          {" "}&middot;{" "}
+          <a href="https://x.com/Microbuilderco" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text)] transition-colors">@Microbuilderco</a>
+        </p>
       </section>
 
       {/* Pricing */}
@@ -437,7 +454,7 @@ function Hero({ onStart }: { onStart: () => void }) {
               rel="noopener noreferrer"
               className="block w-full px-8 py-3 text-sm font-semibold rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors text-center"
             >
-              Buy Once &mdash; $15
+              Buy Starter &mdash; $15
             </a>
           </div>
 
@@ -445,7 +462,7 @@ function Hero({ onStart }: { onStart: () => void }) {
           <div className="rounded-xl border-2 border-[var(--accent)] bg-[var(--bg-card)] p-8 flex flex-col relative">
             <div className="flex items-center gap-2 mb-4">
               <h3 className="text-lg font-semibold">Starter + Updates</h3>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--accent)] text-white">Most Popular</span>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--accent)] text-white">Recommended</span>
             </div>
             <div className="text-3xl font-bold mb-1">$15 <span className="text-lg font-normal text-[var(--text-muted)]">+ $10/mo</span></div>
             <div className="text-sm text-[var(--text-muted)] mb-6">$15 one-time + $10/mo for live updates. Cancel anytime, keep the agents.</div>
@@ -457,8 +474,8 @@ function Hero({ onStart }: { onStart: () => void }) {
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Priority email support</li>
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>30-day money-back guarantee on subscription</li>
             </ul>
-            <BuyButton className="w-full" label="Get Started &mdash; $15" href={CHECKOUT_STARTER} />
-            <p className="text-xs text-center text-[var(--text-muted)] mt-3">Subscription add-on available after purchase.</p>
+            <BuyButton className="w-full" label="Buy Starter + Updates &mdash; $15" href={CHECKOUT_STARTER} />
+            <p className="text-xs text-center text-[var(--text-muted)] mt-3">+ $10/mo for live updates</p>
           </div>
 
           {/* Pro */}
@@ -478,12 +495,26 @@ function Hero({ onStart }: { onStart: () => void }) {
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Nightly builds &mdash; ship while you sleep</li>
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Optional: +$25/mo for live updates</li>
             </ul>
-            <a
-              href="mailto:info@microbuilder.co?subject=Clawd%20Up%20Pro%20Waitlist"
-              className="block w-full px-8 py-3 text-sm font-semibold rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-colors text-center"
-            >
-              Join Waitlist
-            </a>
+            <ProWaitlistCapture />
+          </div>
+        </div>
+      </section>
+
+      {/* What happens after purchase */}
+      <section className="max-w-3xl mx-auto px-6 pb-24">
+        <h2 className="text-2xl font-bold mb-8 text-center">What happens after purchase</h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
+            <div className="text-2xl font-bold text-[var(--accent)] mb-2">1</div>
+            <p className="text-sm text-[var(--text)]">Purchase and run the install command (5 min)</p>
+          </div>
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
+            <div className="text-2xl font-bold text-[var(--accent)] mb-2">2</div>
+            <p className="text-sm text-[var(--text)]">Your first morning brief arrives with scored signals</p>
+          </div>
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
+            <div className="text-2xl font-bold text-[var(--accent)] mb-2">3</div>
+            <p className="text-sm text-[var(--text)]">Scout starts scanning Reddit, HN, and X for your niche</p>
           </div>
         </div>
       </section>
@@ -492,6 +523,10 @@ function Hero({ onStart }: { onStart: () => void }) {
       <section id="faq" className="max-w-3xl mx-auto px-6 pb-24">
         <h2 className="text-2xl font-bold mb-8 text-center">FAQ</h2>
         <div className="max-w-2xl mx-auto">
+          <FAQItem
+            q="How is this different from just using Claude or ChatGPT?"
+            a="ChatGPT is a general assistant you talk to. Clawd Up is a pre-configured team of specialists that runs autonomously -- scanning for opportunities while you sleep, managing a pipeline with enforced gates, and building products from specs. You don't prompt it. It prompts you."
+          />
           <FAQItem
             q="What do I need to run this?"
             a="A VPS (we recommend Hetzner CAX21, ~$8/mo), Node.js 18+, and an Anthropic API key. The install wizard walks you through everything in 5 minutes."
