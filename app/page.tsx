@@ -401,7 +401,7 @@ function Hero({ onStart }: { onStart: () => void }) {
                 ["Pipeline management", "Spreadsheet or Notion", "7-stage gated pipeline"],
                 ["Building from specs", "Write code yourself", "Forge ships nightly"],
                 ["QA and UX checks", "Manual testing", "Automated before deploy"],
-                ["Total setup time", "Weeks", "5 minutes"],
+                ["Total setup time", "Days to weeks", "5 minutes"],
               ].map(([feature, manual, clawd]) => (
                 <tr key={feature} className="border-b border-[var(--border)] last:border-b-0">
                   <td className="px-5 py-3 text-[var(--text)] font-medium whitespace-nowrap">{feature}</td>
@@ -682,7 +682,7 @@ function Onboarding({ onBack, purchased }: { onBack: () => void; purchased?: boo
           <div className="mt-6 text-xs text-[var(--text-muted)] space-y-1">
             <p className="font-medium text-[var(--text)]">What happens next</p>
             <p>1. The script installs Clawd Up agents on your OpenClaw instance</p>
-            <p>2. Your first morning brief arrives within 5 minutes</p>
+            <p>2. Your first morning brief arrives the next morning</p>
             <p>3. Scout starts scanning for signals immediately</p>
           </div>
           <button
