@@ -1,6 +1,4 @@
-import { describe, it, expect } from 'vitest'
-import { render } from '@testing-library/react'
-import Page from '../page'
+import { describe, it, expect, vi } from 'vitest'
 
 // Mock next/navigation since this is a client component using useSearchParams
 vi.mock('next/navigation', () => ({
@@ -9,7 +7,8 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/',
 }))
 
-import { vi } from 'vitest'
+import { render } from '@testing-library/react'
+import Page from '../page'
 
 describe('Page', () => {
   it('renders without crashing', () => {
