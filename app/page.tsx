@@ -38,7 +38,7 @@ const DEFAULT: FormData = {
 };
 
 // ── Constants ──────────────────────────────────────────
-const CHECKOUT_STARTER = "https://microbuilderco.lemonsqueezy.com/checkout/buy/b7d387a5-38ab-45df-9c0a-e7bba9aace9c?locale=en&currency=USD";
+const CHECKOUT_STARTER = "https://microbuilderco.lemonsqueezy.com/checkout/buy/d074001e-0703-4f2b-881c-c8ffe1cefd41?locale=en&currency=USD";
 
 // ── Buy Button ─────────────────────────────────────────
 function BuyButton({ className = "", label = "Get Started", href = CHECKOUT_STARTER }: { className?: string; label?: string; href?: string }) {
@@ -55,8 +55,8 @@ function BuyButton({ className = "", label = "Get Started", href = CHECKOUT_STAR
 }
 
 // ── FAQ Item ───────────────────────────────────────────
-function FAQItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
+function FAQItem({ q, a, defaultOpen = false }: { q: string; a: string; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="border-b border-[var(--border)] py-4">
       <button
@@ -191,7 +191,7 @@ function AgentCard({ name, role, desc, color, pro }: { name: string; role: strin
   const [expanded, setExpanded] = useState(false);
   return (
     <div
-      className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer md:cursor-default relative"
+      className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer md:cursor-default relative h-full"
       onClick={() => setExpanded(!expanded)}
     >
       {pro && (
@@ -214,22 +214,26 @@ function AgentCard({ name, role, desc, color, pro }: { name: string; role: strin
 function PipelineStages() {
   const stages = ["BACKLOG", "QUALIFIED", "RESEARCHING", "SCORING", "REVIEW", "BUILDING", "LIVE"];
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 flex items-center justify-center overflow-x-auto">
-      <div className="flex items-center gap-1 flex-nowrap">
-        {stages.map((stage, i) => (
-          <div key={stage} className="flex items-center gap-1">
-            <span className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap ${
-              stage === "SCORING"
-                ? "bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/30"
-                : "text-[var(--text-muted)] bg-[var(--bg)] border border-[var(--border)]"
-            }`}>
-              {stage}
-            </span>
-            {i < stages.length - 1 && (
-              <span className="text-[var(--text-muted)]/40 text-xs">&rsaquo;</span>
-            )}
-          </div>
-        ))}
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 h-full flex flex-col">
+      <h4 className="text-sm font-semibold text-[var(--text)] mb-1">7-stage pipeline</h4>
+      <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-4">Every opportunity follows enforced gates from Backlog to Live. Nothing advances without evidence.</p>
+      <div className="flex items-center justify-center overflow-x-auto mt-auto">
+        <div className="flex items-center gap-1 flex-wrap justify-center">
+          {stages.map((stage, i) => (
+            <div key={stage} className="flex items-center gap-1">
+              <span className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap ${
+                stage === "SCORING"
+                  ? "bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/30"
+                  : "text-[var(--text-muted)] bg-[var(--bg)] border border-[var(--border)]"
+              }`}>
+                {stage}
+              </span>
+              {i < stages.length - 1 && (
+                <span className="text-[var(--text-muted)]/40 text-xs">&rsaquo;</span>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -286,27 +290,25 @@ function Hero({ onStart }: { onStart: () => void }) {
           <a href="#how-it-works" onClick={(e) => { e.preventDefault(); document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" }); }} className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:inline">How It Works</a>
           <a href="#pricing" onClick={(e) => { e.preventDefault(); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }} className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:inline">Pricing</a>
           <a href="#faq" onClick={(e) => { e.preventDefault(); document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" }); }} className="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors hidden sm:inline">FAQ</a>
-          <a href={CHECKOUT_STARTER} target="_blank" rel="noopener noreferrer" className="px-4 py-2 font-medium rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white transition-colors cursor-pointer">Get Started</a>
+          <a href="#pricing" onClick={(e) => { e.preventDefault(); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }} className="px-4 py-2 font-medium rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white transition-colors cursor-pointer">Get Started</a>
         </div>
       </nav>
 
       {/* Hero */}
       <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
         <div className="inline-block px-3 py-1 rounded-full border border-[var(--border)] text-xs text-[var(--text-muted)] mb-6">
-          AI agents that find, validate, and build micro-SaaS products
+          Production-ready. Self-hosted. Yours to own.
         </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6">
-          Find the opportunity.<br />
-          Decide if it&apos;s real.<br />
-          <span className="text-[var(--accent)]">Build it overnight.</span>
+          AI agents that find, validate, and<br />
+          <span className="text-[var(--accent)]">build micro-SaaS products</span>
         </h1>
         <p className="text-lg text-[var(--text-muted)] max-w-xl mx-auto mb-10 leading-relaxed">
-          Three AI agents that find opportunities, validate them, and manage your pipeline.
-          Upgrade to six and they&apos;ll build, test, and ship for you too.
+          Three AI agents that scan for micro-SaaS opportunities, kill bad ideas, and run your pipeline while you sleep. $19 once, yours forever.
         </p>
-        <div className="flex items-center justify-center gap-4 flex-wrap">
-          <BuyButton className="mx-auto" label="Get Started &mdash; $15" href={CHECKOUT_STARTER} />
-          <a href="#how-it-works" onClick={(e) => { e.preventDefault(); document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" }); }} className="px-6 py-3 text-sm font-medium rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--text-muted)] transition-colors">
+        <div className="flex items-center justify-center gap-3">
+          <BuyButton label="Get Started &mdash; $19" href={CHECKOUT_STARTER} />
+          <a href="#how-it-works" onClick={(e) => { e.preventDefault(); document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" }); }} className="px-8 py-3 text-sm font-medium rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--text-muted)] transition-colors">
             See how it works
           </a>
         </div>
@@ -317,13 +319,18 @@ function Hero({ onStart }: { onStart: () => void }) {
 
       {/* Stats Bar */}
       <section className="max-w-4xl mx-auto px-6 pb-24">
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[var(--text-muted)]">
-          {["3-6 AI agents", "92% noise filtered out", "327+ signals scanned", "7 pipeline stages", "Ships code overnight"].map((stat, i) => (
-            <span key={stat} className="flex items-center gap-3">
-              {i > 0 && <span className="text-[var(--border)]">&middot;</span>}
-              <span>{stat}</span>
-            </span>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-y-2 gap-x-6 text-center text-sm text-[var(--text-muted)]">
+          {["3-6 AI agents", "92% noise filtered out", "327+ signals scanned", "7 pipeline stages", "Ships code overnight"].map((stat) => (
+            <span key={stat}>{stat}</span>
           ))}
+        </div>
+      </section>
+
+      {/* API Cost Callout */}
+      <section className="max-w-3xl mx-auto px-6 pb-24">
+        <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--bg-card)] p-5">
+          <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">API costs</p>
+          <p className="text-sm text-[var(--text)] leading-relaxed">Most users spend $30-80/mo on AI API calls. Scout and Researcher use cheaper models. You control the budget.</p>
         </div>
       </section>
 
@@ -414,6 +421,41 @@ function Hero({ onStart }: { onStart: () => void }) {
         </div>
       </section>
 
+      {/* Built on real pipeline data */}
+      <section className="max-w-3xl mx-auto px-6 pb-24">
+        <h2 className="text-2xl font-bold mb-8 text-center">Built on real pipeline data</h2>
+        <div className="grid gap-4 md:grid-cols-4 sm:grid-cols-2">
+          {[
+            { number: "30+", label: "opportunities killed" },
+            { number: "327+", label: "signals scanned" },
+            { number: "2", label: "products shipped" },
+            { number: "92%", label: "noise filtered" },
+          ].map((stat) => (
+            <div key={stat.label} className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
+              <div className="text-2xl font-bold text-[var(--accent)] mb-2">{stat.number}</div>
+              <p className="text-sm text-[var(--text-muted)]">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Built for solo founders */}
+      <section className="max-w-4xl mx-auto px-6 pb-24">
+        <h2 className="text-2xl font-bold mb-8 text-center">Built for solo founders</h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          {[
+            { title: "Indie hackers", desc: "Building micro-SaaS products and need a system to find and validate ideas fast" },
+            { title: "Bootstrappers", desc: "No VC, no team. Need agents that work while you focus on shipping" },
+            { title: "Side project builders", desc: "Working a day job but want a pipeline running 24/7 in the background" },
+          ].map((card) => (
+            <div key={card.title} className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 h-full">
+              <h3 className="text-sm font-semibold text-[var(--text)] mb-2">{card.title}</h3>
+              <p className="text-sm text-[var(--text-muted)] leading-relaxed">{card.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Built in Public */}
       <section className="max-w-3xl mx-auto px-6 py-20 text-center">
         <p className="text-lg text-[var(--text)] font-semibold mb-2">Built in public. Follow the journey.</p>
@@ -423,16 +465,38 @@ function Hero({ onStart }: { onStart: () => void }) {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="max-w-5xl mx-auto px-6 pb-24">
+      <section id="pricing" className="max-w-4xl mx-auto px-6 pb-24">
         <h2 className="text-2xl font-bold mb-8 text-center">Pricing</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {/* Starter */}
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 flex flex-col">
-            <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-lg font-semibold">Starter</h3>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full border border-[var(--border)] text-[var(--text-muted)]">One-time</span>
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Pro (price anchor — shown first) */}
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 flex flex-col relative">
+            <div className="flex items-center gap-2 h-8 mb-4">
+              <h3 className="text-lg font-semibold">Pro</h3>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full border border-[var(--border)] text-[var(--text-muted)]">Coming Soon</span>
             </div>
-            <div className="text-3xl font-bold mb-1">$15</div>
+            <div className="text-3xl font-bold mb-1">$50</div>
+            <div className="text-sm text-[var(--text-muted)] mb-6">The full team. Yours forever.</div>
+            <ul className="space-y-2 text-sm mb-6 flex-1">
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>6 agents: Scout, Researcher, Operator, Forge, Designer, QA</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Everything in Starter included</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Forge builds production code from specs</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Designer audits UX on every build</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>QA runs automated tests before deploy</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Nightly builds &mdash; ship while you sleep</li>
+              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Orchestration engine + agent coordination</li>
+            </ul>
+            <div className="mt-auto" />
+            <ProWaitlistCapture />
+            <p className="text-xs text-center text-[var(--text-muted)] mt-3">Questions? info@microbuilder.co</p>
+          </div>
+
+          {/* Starter */}
+          <div className="rounded-xl border-2 border-[var(--accent)] bg-[var(--bg-card)] p-8 flex flex-col">
+            <div className="flex items-center gap-2 h-8 mb-4">
+              <h3 className="text-lg font-semibold">Starter</h3>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--accent)] text-white">Available Now</span>
+            </div>
+            <div className="text-3xl font-bold mb-1">$19</div>
             <div className="text-sm text-[var(--text-muted)] mb-6">Yours forever. No subscription.</div>
             <ul className="space-y-2 text-sm mb-6 flex-1">
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>3 agents: Scout, Researcher, Operator</li>
@@ -442,58 +506,17 @@ function Hero({ onStart }: { onStart: () => void }) {
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>5S deep dive framework</li>
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Email support</li>
               <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Self-hosted, your data stays yours</li>
-              <li className="text-[var(--text-muted)]/40 line-through"><span className="mr-2 opacity-40">&#10003;</span>Ongoing updates</li>
-              <li className="text-[var(--text-muted)]/40 line-through"><span className="mr-2 opacity-40">&#10003;</span>New agent templates</li>
-              <li className="text-[var(--text-muted)]/40 line-through"><span className="mr-2 opacity-40">&#10003;</span>Priority support</li>
             </ul>
+            <div className="mt-auto" />
             <a
               href={CHECKOUT_STARTER}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full px-8 py-3 text-sm font-semibold rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors text-center"
+              className="block w-full px-8 py-3 text-sm font-semibold rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-colors text-center"
             >
-              Buy Starter &mdash; $15
+              Buy Starter &mdash; $19
             </a>
-          </div>
-
-          {/* Starter + Updates (Highlighted) */}
-          <div className="rounded-xl border-2 border-[var(--accent)] bg-[var(--bg-card)] p-8 flex flex-col relative">
-            <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-lg font-semibold">Starter + Updates</h3>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--accent)] text-white">Recommended</span>
-            </div>
-            <div className="text-3xl font-bold mb-1">$15 <span className="text-lg font-normal text-[var(--text-muted)]">+ $10/mo</span></div>
-            <div className="text-sm text-[var(--text-muted)] mb-6">$15 one-time + $10/mo for live updates. Cancel anytime, keep the agents.</div>
-            <ul className="space-y-2 text-sm mb-6 flex-1">
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Everything in Starter, plus:</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Monthly agent config updates</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>New kill patterns + scoring rubrics</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>New skills and cron templates as released</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Priority email support</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>30-day money-back guarantee on subscription</li>
-            </ul>
-            <BuyButton className="w-full" label="Buy Starter + Updates &mdash; $15" href={CHECKOUT_STARTER} />
-            <p className="text-xs text-center text-[var(--text-muted)] mt-3">+ $10/mo for live updates</p>
-          </div>
-
-          {/* Pro */}
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-8 flex flex-col relative">
-            <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-lg font-semibold">Pro</h3>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full border border-[var(--border)] text-[var(--text-muted)]">Coming Soon</span>
-            </div>
-            <div className="text-3xl font-bold mb-1">$50</div>
-            <div className="text-sm text-[var(--text-muted)] mb-6">The full team. Yours forever.</div>
-            <ul className="space-y-2 text-sm mb-6 flex-1">
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Everything in Starter, plus:</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Forge agent (builds code from specs)</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Designer agent (UX audits)</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>QA agent (automated testing)</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Orchestration engine (agent coordination)</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Nightly builds &mdash; ship while you sleep</li>
-              <li className="text-[var(--text-muted)]"><span className="text-[var(--green)] mr-2">&#10003;</span>Optional: +$25/mo for live updates</li>
-            </ul>
-            <ProWaitlistCapture />
+            <p className="text-xs text-center text-[var(--text-muted)] mt-3">Questions? info@microbuilder.co</p>
           </div>
         </div>
       </section>
@@ -502,17 +525,17 @@ function Hero({ onStart }: { onStart: () => void }) {
       <section className="max-w-3xl mx-auto px-6 pb-24">
         <h2 className="text-2xl font-bold mb-8 text-center">What happens after purchase</h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center h-full">
             <div className="text-2xl font-bold text-[var(--accent)] mb-2">1</div>
             <p className="text-sm text-[var(--text)]">Purchase and run the install command (5 min)</p>
           </div>
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center h-full">
             <div className="text-2xl font-bold text-[var(--accent)] mb-2">2</div>
-            <p className="text-sm text-[var(--text)]">Your first morning brief arrives with scored signals</p>
+            <p className="text-sm text-[var(--text)]">Configure your signal sources and niche keywords (2 min)</p>
           </div>
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center h-full">
             <div className="text-2xl font-bold text-[var(--accent)] mb-2">3</div>
-            <p className="text-sm text-[var(--text)]">Scout starts scanning Reddit, HN, and X for your niche</p>
+            <p className="text-sm text-[var(--text)]">Wake up to your first morning brief with scored signals</p>
           </div>
         </div>
       </section>
@@ -536,6 +559,7 @@ function Hero({ onStart }: { onStart: () => void }) {
           <FAQItem
             q="How much does the AI API cost to run?"
             a="Most users spend $30-80/mo on API calls. Scout and Researcher use Sonnet (cheap). Forge and Operator use Opus for complex work. You control the budget."
+            defaultOpen
           />
           <FAQItem
             q="What can Forge actually build?"
@@ -546,12 +570,24 @@ function Hero({ onStart }: { onStart: () => void }) {
             a="A 7-stage system: Backlog, Qualified, Researching, Scoring, Review, Building, Live. Each stage has gate criteria. Nothing advances without evidence. The Operator manages transitions automatically."
           />
           <FAQItem
+            q="Is this production-ready or a hobby tool?"
+            a="Production-ready. Clawd Up runs as systemd daemons on your VPS, not in a terminal tab you forget to close. It survives reboots, handles API failures gracefully, and has been running nightly builds since February 2026. OpenClaw published a formal security audit in March 2026 — skill installer validation, terminal sanitization, URL scheme allowlisting. The audit is public. The code is auditable. This is not a weekend experiment."
+          />
+          <FAQItem
             q="Why self-hosted?"
-            a="Your data, your API keys, your agents. We never see your pipeline, signals, or business strategy. You own everything."
+            a="Your API keys, pipeline, and business strategy never leave your server. No vendor reads your data, no SaaS dependency between you and your business. OpenClaw's March 2026 security audit (skill installer validation, terminal sanitization, URL allowlisting) is public and verifiable. This is infrastructure you can audit — not a black box."
+          />
+          <FAQItem
+            q="How is this different from infrastructure tools like AlphaClaw?"
+            a="AlphaClaw manages fleets of OpenClaw instances for teams. Clawd Up is a configured content bundle for solo founders — the right agents, right crons, right SOULs, out of the box. They&apos;re sequential purchases, not competing ones: you might buy Clawd Up to get started, then AlphaClaw when you&apos;re running 10 instances. Different stages, different buyers."
           />
           <FAQItem
             q="Can I cancel?"
             a="Yes, anytime. You keep all your configs, agents, and pipeline data. Updates stop, but nothing breaks."
+          />
+          <FAQItem
+            q="What happens if an agent breaks my config?"
+            a="Clawd Up ships with a battle-tested `openclaw.json` config that's been running in production for months. Unlike a fresh install where agents can corrupt their own settings, our config is version-controlled and ships with agent boundaries already set. If something breaks, you can re-run the install script to restore defaults in under 60 seconds."
           />
         </div>
       </section>
@@ -561,15 +597,18 @@ function Hero({ onStart }: { onStart: () => void }) {
         <h2 className="text-3xl md:text-4xl font-bold mb-2">Signal to shipped product.</h2>
         <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[var(--accent)]">While you sleep.</h2>
         <p className="text-[var(--text-muted)] mb-8">Three agents. Seven pipeline stages. One purchase.</p>
-        <BuyButton label="Get Started &mdash; $15" href={CHECKOUT_STARTER} />
+        <BuyButton label="Get Started &mdash; $19" href={CHECKOUT_STARTER} />
       </section>
 
       {/* Footer */}
       <footer className="border-t border-[var(--border)] py-8 text-center text-xs text-[var(--text-muted)]">
-        Clawd Up &middot; Powered by{" "}
-        <a href="https://github.com/openclaw/openclaw" className="underline hover:text-[var(--text)]">
-          OpenClaw
-        </a>
+        <div className="mb-2">
+          &copy; 2026 <a href="https://microbuilder.co" className="underline hover:text-[var(--text)]">Microbuilder</a>
+        </div>
+        <div className="flex justify-center gap-4">
+          <a href="/terms.html" className="underline hover:text-[var(--text)]">Terms &amp; Conditions</a>
+          <a href="/privacy.html" className="underline hover:text-[var(--text)]">Privacy Policy</a>
+        </div>
       </footer>
       <ChatWidget />
     </div>
